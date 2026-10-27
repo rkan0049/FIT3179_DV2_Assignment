@@ -1,0 +1,224 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "Dendrogram, a node-link tree (Vega): the 120 National Heritage places in 2023, branching by survey response, whether a management plan is in place, and how effective managers rated the plan. Node area and link width show the number of places.",
+  "width": 600,
+  "height": 380,
+  "padding": {
+    "left": 40,
+    "right": 10,
+    "top": 30,
+    "bottom": 10
+  },
+  "autosize": "pad",
+  "background": null,
+  "data": [
+    {
+      "name": "tree",
+      "url": "data/nhl_management_tree.csv",
+      "format": {
+        "type": "csv",
+        "parse": {
+          "places": "number"
+        }
+      },
+      "transform": [
+        {
+          "type": "stratify",
+          "key": "id",
+          "parentKey": "parent"
+        },
+        {
+          "type": "tree",
+          "method": "cluster",
+          "size": [
+            {
+              "signal": "height"
+            },
+            {
+              "signal": "width"
+            }
+          ],
+          "separation": true,
+          "as": [
+            "y",
+            "x",
+            "depth",
+            "children"
+          ]
+        },
+        {
+          "type": "formula",
+          "expr": "datum.name + ' \u00b7 ' + datum.places",
+          "as": "label"
+        }
+      ]
+    },
+    {
+      "name": "links",
+      "source": "tree",
+      "transform": [
+        {
+          "type": "treelinks"
+        },
+        {
+          "type": "linkpath",
+          "orient": "horizontal",
+          "shape": "diagonal"
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "colour",
+      "type": "ordinal",
+      "domain": [
+        "root",
+        "known",
+        "good",
+        "bad",
+        "gap"
+      ],
+      "range": [
+        "#6b625a",
+        "#6f9180",
+        "#4f7a5a",
+        "#b5451b",
+        "#bdb4a8"
+      ]
+    },
+    {
+      "name": "node_area",
+      "type": "linear",
+      "domain": [
+        0,
+        120
+      ],
+      "range": [
+        30,
+        1900
+      ]
+    },
+    {
+      "name": "link_width",
+      "type": "linear",
+      "domain": [
+        0,
+        120
+      ],
+      "range": [
+        1,
+        30
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "type": "path",
+      "from": {
+        "data": "links"
+      },
+      "encode": {
+        "update": {
+          "path": {
+            "field": "path"
+          },
+          "stroke": {
+            "scale": "colour",
+            "field": "target.status"
+          },
+          "strokeOpacity": {
+            "value": 0.35
+          },
+          "strokeWidth": {
+            "scale": "link_width",
+            "field": "target.places"
+          }
+        }
+      }
+    },
+    {
+      "type": "symbol",
+      "from": {
+        "data": "tree"
+      },
+      "encode": {
+        "enter": {
+          "shape": {
+            "value": "circle"
+          },
+          "stroke": {
+            "value": "#ffffff"
+          },
+          "strokeWidth": {
+            "value": 1.5
+          }
+        },
+        "update": {
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "field": "y"
+          },
+          "size": {
+            "scale": "node_area",
+            "field": "places"
+          },
+          "fill": {
+            "scale": "colour",
+            "field": "status"
+          },
+          "tooltip": {
+            "signal": "{'Group': datum.name, 'National Heritage places': datum.places}"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {
+        "data": "tree"
+      },
+      "encode": {
+        "enter": {
+          "font": {
+            "value": "'Source Sans 3', sans-serif"
+          },
+          "fontSize": {
+            "value": 13
+          },
+          "baseline": {
+            "value": "middle"
+          },
+          "fill": {
+            "value": "#2b2622"
+          }
+        },
+        "update": {
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "field": "y"
+          },
+          "text": {
+            "field": "label"
+          },
+          "fontWeight": {
+            "signal": "datum.status == 'bad' ? 'bold' : 'normal'"
+          },
+          "align": {
+            "signal": "datum.children ? 'center' : 'left'"
+          },
+          "dx": {
+            "signal": "datum.children ? 0 : sqrt(scale('node_area', datum.places) / PI) + 6"
+          },
+          "dy": {
+            "signal": "datum.children ? -(sqrt(scale('node_area', datum.places) / PI) + 10) : 0"
+          }
+        }
+      }
+    }
+  ]
+}

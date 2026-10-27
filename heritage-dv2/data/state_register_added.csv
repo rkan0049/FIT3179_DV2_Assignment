@@ -1,0 +1,41 @@
+state,state_name,fin_year,added
+ACT,Australian Capital Territory,2015-16,20
+ACT,Australian Capital Territory,2016-17,13
+ACT,Australian Capital Territory,2017-18,9
+ACT,Australian Capital Territory,2018-19,10
+ACT,Australian Capital Territory,2019-20,6
+NT,Northern Territory,2015-16,26
+NT,Northern Territory,2016-17,6
+NT,Northern Territory,2017-18,0
+NT,Northern Territory,2018-19,3
+NT,Northern Territory,2019-20,3
+NSW,New South Wales,2015-16,20
+NSW,New South Wales,2016-17,12
+NSW,New South Wales,2017-18,19
+NSW,New South Wales,2018-19,22
+NSW,New South Wales,2019-20,10
+QLD,Queensland,2015-16,18
+QLD,Queensland,2016-17,16
+QLD,Queensland,2017-18,13
+QLD,Queensland,2018-19,29
+QLD,Queensland,2019-20,14
+SA,South Australia,2015-16,3
+SA,South Australia,2016-17,4
+SA,South Australia,2017-18,4
+SA,South Australia,2018-19,7
+SA,South Australia,2019-20,2
+TAS,Tasmania,2015-16,0
+TAS,Tasmania,2016-17,0
+TAS,Tasmania,2017-18,2
+TAS,Tasmania,2018-19,1
+TAS,Tasmania,2019-20,3
+VIC,Victoria,2015-16,12
+VIC,Victoria,2016-17,11
+VIC,Victoria,2017-18,15
+VIC,Victoria,2018-19,7
+VIC,Victoria,2019-20,7
+WA,Western Australia,2015-16,12
+WA,Western Australia,2016-17,8
+WA,Western Australia,2017-18,8
+WA,Western Australia,2018-19,10
+WA,Western Australia,2019-20,17

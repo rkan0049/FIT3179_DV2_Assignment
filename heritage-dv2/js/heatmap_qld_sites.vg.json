@@ -1,0 +1,359 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Heatmap with marginal totals: Aboriginal and Torres Strait Islander cultural heritage sites newly recorded in Queensland, by site type and year, 2012 to 2020.",
+  "background": null,
+  "data": {
+    "url": "data/qld_indigenous_sites_recorded.csv",
+    "format": {
+      "parse": {
+        "2012": "number",
+        "2013": "number",
+        "2014": "number",
+        "2015": "number",
+        "2016": "number",
+        "2017": "number",
+        "2018": "number",
+        "2019": "number",
+        "2020": "number"
+      }
+    }
+  },
+  "params": [
+    {
+      "name": "region",
+      "value": "All regions",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All regions",
+          "North",
+          "Central",
+          "South"
+        ],
+        "name": "Queensland region: "
+      }
+    }
+  ],
+  "transform": [
+    {
+      "filter": "region == 'All regions' || datum.Region == region"
+    },
+    {
+      "fold": [
+        "2012",
+        "2013",
+        "2014",
+        "2015",
+        "2016",
+        "2017",
+        "2018",
+        "2019",
+        "2020"
+      ],
+      "as": [
+        "year",
+        "sites"
+      ]
+    },
+    {
+      "calculate": "datum.sites == null ? 0 : datum.sites",
+      "as": "sites"
+    },
+    {
+      "aggregate": [
+        {
+          "op": "sum",
+          "field": "sites",
+          "as": "sites"
+        }
+      ],
+      "groupby": [
+        "Site",
+        "year"
+      ]
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "sum",
+          "field": "sites",
+          "as": "type_total"
+        }
+      ],
+      "groupby": [
+        "Site"
+      ]
+    }
+  ],
+  "spacing": 12,
+  "hconcat": [
+    {
+      "width": 540,
+      "height": {
+        "step": 26
+      },
+      "encoding": {
+        "x": {
+          "field": "year",
+          "type": "ordinal",
+          "title": null,
+          "axis": {
+            "orient": "top",
+            "labelAngle": 0,
+            "ticks": false,
+            "domain": false,
+            "labelFontSize": 12
+          }
+        },
+        "y": {
+          "field": "Site",
+          "type": "nominal",
+          "title": null,
+          "sort": {
+            "field": "type_total",
+            "op": "max",
+            "order": "descending"
+          },
+          "axis": {
+            "ticks": false,
+            "domain": false,
+            "labelFontSize": 12,
+            "labelPadding": 6
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "stroke": "#ffffff",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "color": {
+              "field": "sites",
+              "type": "quantitative",
+              "title": "Sites recorded",
+              "scale": {
+                "type": "symlog",
+                "constant": 5,
+                "domain": [
+                  0,
+                  2000
+                ],
+                "range": [
+                  "#f3eacf",
+                  "#d9bf90",
+                  "#9a6a12",
+                  "#3c3831"
+                ]
+              },
+              "legend": {
+                "orient": "bottom",
+                "direction": "horizontal",
+                "gradientLength": 260,
+                "values": [
+                  0,
+                  10,
+                  100,
+                  1000
+                ]
+              }
+            },
+            "tooltip": [
+              {
+                "field": "Site",
+                "title": "Site type"
+              },
+              {
+                "field": "year",
+                "title": "Year"
+              },
+              {
+                "field": "sites",
+                "title": "Sites recorded",
+                "format": ","
+              }
+            ],
+            "opacity": {
+              "condition": {
+                "param": "row_hover",
+                "value": 1
+              },
+              "value": 0.35
+            }
+          },
+          "params": [
+            {
+              "name": "row_hover",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "Site"
+                ],
+                "on": "pointerover",
+                "clear": "pointerout"
+              }
+            }
+          ]
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 10
+          },
+          "transform": [
+            {
+              "filter": "datum.sites > 0"
+            }
+          ],
+          "encoding": {
+            "text": {
+              "field": "sites",
+              "type": "quantitative",
+              "format": ","
+            },
+            "color": {
+              "condition": {
+                "test": "datum.sites >= 100",
+                "value": "#ffffff"
+              },
+              "value": "#3c3831"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 150,
+      "height": {
+        "step": 26
+      },
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "sites",
+              "as": "total"
+            }
+          ],
+          "groupby": [
+            "Site"
+          ]
+        },
+        {
+          "joinaggregate": [
+            {
+              "op": "sum",
+              "field": "total",
+              "as": "grand"
+            },
+            {
+              "op": "max",
+              "field": "total",
+              "as": "top"
+            }
+          ]
+        },
+        {
+          "calculate": "datum.total == datum.top ? format(datum.total / datum.grand, '.0%') + ' of all' : ''",
+          "as": "share_lbl"
+        }
+      ],
+      "encoding": {
+        "y": {
+          "field": "Site",
+          "type": "nominal",
+          "sort": {
+            "field": "total",
+            "order": "descending"
+          },
+          "axis": null
+        },
+        "x": {
+          "field": "total",
+          "type": "quantitative",
+          "axis": null
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "bar",
+            "color": "#9a6a12",
+            "height": {
+              "band": 0.6
+            }
+          },
+          "encoding": {
+            "tooltip": [
+              {
+                "field": "Site",
+                "title": "Site type"
+              },
+              {
+                "field": "total",
+                "title": "Total 2012 to 2020",
+                "format": ","
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 4,
+            "fontSize": 11,
+            "color": "#3c3831"
+          },
+          "encoding": {
+            "text": {
+              "field": "total",
+              "type": "quantitative",
+              "format": ","
+            }
+          }
+        },
+        {
+          "comment": "Annotation: share of the biggest site type",
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -5,
+            "fontSize": 11,
+            "fontStyle": "italic",
+            "fontWeight": 600,
+            "color": "#ffffff"
+          },
+          "encoding": {
+            "text": {
+              "field": "share_lbl"
+            }
+          }
+        }
+      ],
+      "title": {
+        "text": "Total",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "color": "#5b5850",
+        "anchor": "start"
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "axis": {
+      "labelColor": "#3c3831"
+    },
+    "legend": {
+      "labelFontSize": 11,
+      "titleFontSize": 12
+    }
+  }
+}

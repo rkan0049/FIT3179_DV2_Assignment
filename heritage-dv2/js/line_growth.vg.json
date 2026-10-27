@@ -1,0 +1,325 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "National Heritage listings per year (detail) with a cumulative total that can be brushed to zoom in on a period (overview).",
+  "background": null,
+  "data": {
+    "url": "data/nhl_places.csv"
+  },
+  "vconcat": [
+    {
+      "width": 390,
+      "height": 230,
+      "layer": [
+        {
+          "transform": [
+            {
+              "calculate": "datum.year - 0.4",
+              "as": "bar_start"
+            },
+            {
+              "calculate": "datum.year + 0.4",
+              "as": "bar_end"
+            }
+          ],
+          "mark": {
+            "type": "bar",
+            "clip": true
+          },
+          "encoding": {
+            "x": {
+              "field": "bar_start",
+              "type": "quantitative",
+              "scale": {
+                "domain": {
+                  "param": "brush"
+                },
+                "padding": 16,
+                "nice": false,
+                "zero": false
+              },
+              "axis": {
+                "title": null,
+                "format": "d",
+                "grid": false,
+                "values": [
+                  2004,
+                  2008,
+                  2012,
+                  2016,
+                  2020,
+                  2024
+                ]
+              }
+            },
+            "x2": {
+              "field": "bar_end"
+            },
+            "y": {
+              "aggregate": "count",
+              "type": "quantitative",
+              "title": "Places listed that year"
+            },
+            "color": {
+              "field": "class",
+              "type": "nominal",
+              "scale": {
+                "domain": [
+                  "Historic",
+                  "Natural",
+                  "Indigenous"
+                ],
+                "range": [
+                  "#8a8376",
+                  "#2f4b6e",
+                  "#9a6a12"
+                ]
+              },
+              "legend": {
+                "orient": "top",
+                "direction": "horizontal",
+                "title": null
+              }
+            },
+            "order": {
+              "field": "class",
+              "sort": "descending"
+            },
+            "tooltip": [
+              {
+                "field": "year",
+                "title": "Year"
+              },
+              {
+                "field": "class",
+                "title": "Type"
+              },
+              {
+                "aggregate": "count",
+                "title": "Places listed"
+              }
+            ]
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "x": 2007.6,
+                "y": 34,
+                "text": [
+                  "2007: 16 World Heritage",
+                  "places added in one day"
+                ]
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 4,
+            "fontSize": 12,
+            "fontStyle": "italic",
+            "color": "#5b5850",
+            "clip": true
+          },
+          "encoding": {
+            "x": {
+              "field": "x",
+              "type": "quantitative",
+              "scale": {
+                "domain": {
+                  "param": "brush"
+                }
+              }
+            },
+            "y": {
+              "field": "y",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "text"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 70,
+      "title": {
+        "text": "Total places on the list. Drag across this chart to zoom in on a period.",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "color": "#5b5850",
+        "anchor": "start"
+      },
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "added"
+            }
+          ],
+          "groupby": [
+            "year"
+          ]
+        },
+        {
+          "window": [
+            {
+              "op": "sum",
+              "field": "added",
+              "as": "total"
+            }
+          ],
+          "sort": [
+            {
+              "field": "year"
+            }
+          ]
+        }
+      ],
+      "layer": [
+        {
+          "params": [
+            {
+              "name": "brush",
+              "select": {
+                "type": "interval",
+                "encodings": [
+                  "x"
+                ]
+              }
+            }
+          ],
+          "mark": {
+            "type": "area",
+            "interpolate": "step-after",
+            "line": {
+              "color": "#3c3831"
+            },
+            "color": "#f3eacf"
+          },
+          "encoding": {
+            "x": {
+              "field": "year",
+              "type": "quantitative",
+              "scale": {
+                "domain": [
+                  2003.6,
+                  2026.4
+                ]
+              },
+              "axis": {
+                "title": null,
+                "format": "d",
+                "grid": false,
+                "values": [
+                  2004,
+                  2008,
+                  2012,
+                  2016,
+                  2020,
+                  2024
+                ]
+              }
+            },
+            "y": {
+              "field": "total",
+              "type": "quantitative",
+              "title": "Total",
+              "axis": {
+                "tickCount": 3
+              }
+            },
+            "tooltip": [
+              {
+                "field": "year",
+                "title": "Year"
+              },
+              {
+                "field": "total",
+                "title": "Total places listed"
+              }
+            ]
+          }
+        },
+        {
+          "comment": "Annotation: reading the surge",
+          "transform": [
+            {
+              "filter": "datum.year == 2007"
+            }
+          ],
+          "mark": {
+            "type": "point",
+            "filled": true,
+            "color": "#9a6a12",
+            "size": 50
+          },
+          "encoding": {
+            "x": {
+              "field": "year",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "total",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.year == 2007"
+            },
+            {
+              "calculate": "datum.total + ' places (60%) listed by 2007'",
+              "as": "t"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 7,
+            "dy": 8,
+            "fontSize": 11.5,
+            "fontStyle": "italic",
+            "fontWeight": 600,
+            "color": "#9a6a12"
+          },
+          "encoding": {
+            "x": {
+              "field": "year",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "total",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "axis": {
+      "labelFontSize": 12,
+      "titleFontSize": 12,
+      "titleColor": "#5b5850"
+    },
+    "legend": {
+      "labelFontSize": 12
+    }
+  }
+}

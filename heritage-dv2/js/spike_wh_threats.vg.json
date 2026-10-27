@@ -1,0 +1,614 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Spike map of UNESCO State of Conservation reports for Australia's World Heritage properties (1983 to 2026), linked to a timeline of the threats UNESCO raised. Pick a threat to resize the spikes, click a spike to filter the timeline. Source: UNESCO World Heritage Centre, State of Conservation database.",
+  "background": null,
+  "spacing": 24,
+  "params": [
+    {
+      "name": "threat_pick",
+      "value": "All threats",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All threats",
+          "Climate change and fire",
+          "Mining and energy",
+          "Development and tourism",
+          "Pollution",
+          "Land and sea use",
+          "Management and funding"
+        ],
+        "name": "Spike height shows reports about: "
+      }
+    }
+  ],
+  "vconcat": [
+    {
+      "width": 720,
+      "height": 440,
+      "projection": {
+        "type": "conicEqualArea",
+        "parallels": [
+          -18,
+          -36
+        ],
+        "rotate": [
+          -132,
+          0
+        ]
+      },
+      "layer": [
+        {
+          "data": {
+            "url": "data/aus_states.topojson",
+            "format": {
+              "type": "topojson",
+              "feature": "states"
+            }
+          },
+          "mark": {
+            "type": "geoshape",
+            "fill": "#f3eacf",
+            "stroke": "#ffffff",
+            "strokeWidth": 1
+          }
+        },
+        {
+          "data": {
+            "url": "data/wh_soc_properties.csv"
+          },
+          "transform": [
+            {
+              "filter": "datum.property != 'Heard and McDonald Is.' && datum.property != 'Macquarie Island'"
+            },
+            {
+              "calculate": "threat_pick == 'All threats' ? toNumber(datum.reports) : toNumber(datum[threat_pick])",
+              "as": "n"
+            },
+            {
+              "calculate": "'M -0.09 0 L 0 ' + (-datum.n / 20) + ' L 0.09 0 Z'",
+              "as": "spike"
+            }
+          ],
+          "params": [
+            {
+              "name": "prop_pick",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "property"
+                ],
+                "toggle": false
+              }
+            },
+            {
+              "name": "spike_hover",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "property"
+                ],
+                "on": "pointerover",
+                "clear": "pointerout"
+              }
+            }
+          ],
+          "mark": {
+            "type": "point",
+            "filled": true,
+            "strokeWidth": 1,
+            "stroke": "#ffffff",
+            "cursor": "pointer"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "shape": {
+              "field": "spike",
+              "type": "nominal",
+              "scale": null
+            },
+            "size": {
+              "value": 14000
+            },
+            "color": {
+              "condition": [
+                {
+                  "param": "prop_pick",
+                  "empty": false,
+                  "value": "#3c3831"
+                },
+                {
+                  "param": "spike_hover",
+                  "empty": false,
+                  "value": "#5b5850"
+                }
+              ],
+              "value": "#9a6a12"
+            },
+            "opacity": {
+              "condition": [
+                {
+                  "test": "datum.n == 0",
+                  "value": 0
+                },
+                {
+                  "param": "prop_pick",
+                  "value": 0.9
+                }
+              ],
+              "value": 0.3
+            },
+            "order": {
+              "field": "lat",
+              "sort": "ascending"
+            },
+            "tooltip": [
+              {
+                "field": "full_name",
+                "title": "World Heritage property"
+              },
+              {
+                "field": "n",
+                "title": "Reports about the chosen threat"
+              },
+              {
+                "field": "reports",
+                "title": "All UNESCO reports"
+              },
+              {
+                "field": "first_year",
+                "title": "First report"
+              },
+              {
+                "field": "last_year",
+                "title": "Latest report"
+              },
+              {
+                "field": "top_threat",
+                "title": "Most raised threat"
+              }
+            ]
+          }
+        },
+        {
+          "data": {
+            "url": "data/wh_soc_properties.csv"
+          },
+          "transform": [
+            {
+              "calculate": "threat_pick == 'All threats' ? toNumber(datum.reports) : toNumber(datum[threat_pick])",
+              "as": "n"
+            },
+            {
+              "filter": "datum.n >= 3 && datum.property != 'Wet Tropics' && datum.property != 'Heard and McDonald Is.' && datum.property != 'Macquarie Island'"
+            },
+            {
+              "calculate": "datum.property + ' (' + datum.n + ')'",
+              "as": "label"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 8,
+            "dy": -6,
+            "fontSize": 12,
+            "fontWeight": 600,
+            "color": "#3c3831"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        },
+        {
+          "data": {
+            "url": "data/wh_soc_properties.csv"
+          },
+          "transform": [
+            {
+              "calculate": "threat_pick == 'All threats' ? toNumber(datum.reports) : toNumber(datum[threat_pick])",
+              "as": "n"
+            },
+            {
+              "filter": "datum.n >= 3 && datum.property == 'Wet Tropics'"
+            },
+            {
+              "calculate": "datum.property + ' (' + datum.n + ')'",
+              "as": "label"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -8,
+            "dy": -6,
+            "fontSize": 12,
+            "fontWeight": 600,
+            "color": "#3c3831"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        },
+        {
+          "comment": "Legend: reference spikes drawn with the same shape and size as the map spikes",
+          "data": {
+            "values": [
+              {
+                "lx": 40,
+                "n": 5
+              },
+              {
+                "lx": 80,
+                "n": 10
+              },
+              {
+                "lx": 120,
+                "n": 20
+              }
+            ]
+          },
+          "transform": [
+            {
+              "calculate": "'M -0.09 0 L 0 ' + (-datum.n / 20) + ' L 0.09 0 Z'",
+              "as": "spike"
+            }
+          ],
+          "mark": {
+            "type": "point",
+            "filled": true,
+            "color": "#9a6a12",
+            "opacity": 0.9,
+            "stroke": "#ffffff",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "x": {
+              "field": "lx",
+              "type": "quantitative",
+              "scale": null
+            },
+            "y": {
+              "value": 430
+            },
+            "shape": {
+              "field": "spike",
+              "type": "nominal",
+              "scale": null
+            },
+            "size": {
+              "value": 14000
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "lx": 40,
+                "n": 5
+              },
+              {
+                "lx": 80,
+                "n": 10
+              },
+              {
+                "lx": 120,
+                "n": 20
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "fontSize": 11,
+            "color": "#3c3831",
+            "baseline": "top",
+            "dy": 4
+          },
+          "encoding": {
+            "x": {
+              "field": "lx",
+              "type": "quantitative",
+              "scale": null
+            },
+            "y": {
+              "value": 430
+            },
+            "text": {
+              "field": "n"
+            }
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "t": [
+                  "Spike height =",
+                  "UNESCO reports"
+                ]
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "fontSize": 12,
+            "fontWeight": 600,
+            "color": "#3c3831",
+            "lineHeight": 15,
+            "x": 20,
+            "y": 352
+          },
+          "encoding": {
+            "text": {
+              "field": "t"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "width": 720,
+      "height": {
+        "step": 34
+      },
+      "title": {
+        "text": "Threats UNESCO raised each year (click a spike to see one property)",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "color": "#5b5850",
+        "anchor": "start",
+        "offset": 18
+      },
+      "layer": [
+        {
+          "data": {
+            "url": "data/wh_soc_threats.csv"
+          },
+          "transform": [
+            {
+              "filter": {
+                "param": "prop_pick"
+              }
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "distinct",
+                  "field": "report_id",
+                  "as": "reports"
+                }
+              ],
+              "groupby": [
+                "year",
+                "group"
+              ]
+            }
+          ],
+          "mark": {
+            "type": "circle",
+            "stroke": "#ffffff",
+            "strokeWidth": 0.8
+          },
+          "encoding": {
+            "x": {
+              "field": "year",
+              "type": "quantitative",
+              "title": null,
+              "scale": {
+                "domain": [
+                  1982,
+                  2027
+                ],
+                "nice": false
+              },
+              "axis": {
+                "format": "d",
+                "values": [
+                  1985,
+                  1990,
+                  1995,
+                  2000,
+                  2005,
+                  2010,
+                  2015,
+                  2020,
+                  2025
+                ],
+                "grid": false
+              }
+            },
+            "y": {
+              "field": "group",
+              "type": "nominal",
+              "title": null,
+              "sort": [
+                "Climate change and fire",
+                "Mining and energy",
+                "Development and tourism",
+                "Pollution",
+                "Land and sea use",
+                "Management and funding"
+              ],
+              "axis": {
+                "ticks": false,
+                "domain": false,
+                "labelFontSize": 12
+              }
+            },
+            "size": {
+              "field": "reports",
+              "type": "quantitative",
+              "title": "Reports that year",
+              "scale": {
+                "domain": [
+                  1,
+                  4
+                ],
+                "range": [
+                  50,
+                  380
+                ],
+                "zero": false
+              },
+              "legend": {
+                "orient": "bottom",
+                "direction": "horizontal",
+                "values": [
+                  1,
+                  2,
+                  4
+                ],
+                "format": "d"
+              }
+            },
+            "color": {
+              "field": "group",
+              "type": "nominal",
+              "scale": {
+                "domain": [
+                  "Climate change and fire",
+                  "Mining and energy",
+                  "Development and tourism",
+                  "Pollution",
+                  "Land and sea use",
+                  "Management and funding"
+                ],
+                "range": [
+                  "#9a6a12",
+                  "#5b5850",
+                  "#d9bf90",
+                  "#9fb4c7",
+                  "#8a8376",
+                  "#2f4b6e"
+                ]
+              },
+              "legend": null
+            },
+            "opacity": {
+              "condition": {
+                "test": "threat_pick == 'All threats' || datum.group == threat_pick",
+                "value": 0.9
+              },
+              "value": 0.12
+            },
+            "tooltip": [
+              {
+                "field": "year",
+                "title": "Year"
+              },
+              {
+                "field": "group",
+                "title": "Threat group"
+              },
+              {
+                "field": "reports",
+                "title": "Reports raising it"
+              }
+            ]
+          }
+        },
+        {
+          "comment": "Annotation: 2011 turning point",
+          "data": {
+            "values": [
+              {
+                "year": 2010.5
+              }
+            ]
+          },
+          "mark": {
+            "type": "rule",
+            "color": "#9a6a12",
+            "strokeDash": [
+              3,
+              3
+            ]
+          },
+          "encoding": {
+            "x": {
+              "field": "year",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "comment": "Annotation text",
+          "data": {
+            "values": [
+              {
+                "year": 2010.5,
+                "t": "Climate and fire: raised in 11 of 16 years since 2011"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "bottom",
+            "dx": 5,
+            "y": -4,
+            "fontSize": 10.5,
+            "fontStyle": "italic",
+            "fontWeight": 600,
+            "color": "#9a6a12"
+          },
+          "encoding": {
+            "x": {
+              "field": "year",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            },
+            "opacity": {
+              "condition": {
+                "test": "!length(data('prop_pick_store'))",
+                "value": 1
+              },
+              "value": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "axis": {
+      "labelColor": "#3c3831"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Number of National Heritage places by heritage type.",
+  "width": "container",
+  "height": 150,
+  "background": null,
+  "data": {"url": "data/nhl_places.csv"},
+  "transform": [
+    {"aggregate": [{"op": "count", "as": "places"}], "groupby": ["class"]}
+  ],
+  "encoding": {
+    "y": {
+      "field": "class",
+      "type": "nominal",
+      "sort": "-x",
+      "title": null,
+      "axis": {"ticks": false, "domain": false, "labelFontSize": 14, "labelPadding": 8}
+    },
+    "x": {
+      "field": "places",
+      "type": "quantitative",
+      "title": null,
+      "axis": null
+    }
+  },
+  "layer": [
+    {
+      "mark": {"type": "bar", "cornerRadiusEnd": 3, "height": {"band": 0.7}},
+      "encoding": {
+        "color": {
+          "field": "class",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Historic", "Natural", "Indigenous"],
+            "range": ["#8a6d3b", "#4f7a5a", "#b5451b"]
+          },
+          "legend": null
+        },
+        "tooltip": [
+          {"field": "class", "title": "Type"},
+          {"field": "places", "title": "Places"}
+        ]
+      }
+    },
+    {
+      "mark": {"type": "text", "align": "left", "dx": 6, "fontSize": 14, "fontWeight": "bold"},
+      "encoding": {
+        "text": {"field": "places", "type": "quantitative"},
+        "color": {"value": "#2b2622"}
+      }
+    }
+  ],
+  "config": {
+    "view": {"stroke": null},
+    "font": "Source Sans 3"
+  }
+}

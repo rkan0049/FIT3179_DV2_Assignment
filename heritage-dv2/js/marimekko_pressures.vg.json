@@ -1,0 +1,516 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Marimekko (mosaic) chart of expert-named pressures by driver for each heritage type, linked to a detail chart of individual pressures. Click a tile to see the pressures behind it.",
+  "background": null,
+  "data": {
+    "url": "data/heritage_pressures.csv"
+  },
+  "transform": [
+    {
+      "comment": "indexof gives each heritage type a fixed order number, so columns always appear in the same order",
+      "calculate": "indexof(['Natural', 'Geoheritage', 'Indigenous', 'Historic'], datum.heritage_type)",
+      "as": "type_order"
+    },
+    {
+      "comment": "pressure group order, so tiles stack in the same order in every column",
+      "calculate": "indexof(['Climate change', 'Industry', 'Population', 'Governance', 'Other'], datum.driver)",
+      "as": "driver_order"
+    }
+  ],
+  "spacing": 20,
+  "comment": "hconcat: Marimekko on the left, detail panel on the right, side by side",
+  "hconcat": [
+    {
+      "width": 450,
+      "height": 380,
+      "transform": [
+        {
+          "comment": "sum mentions for each heritage type + pressure group",
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "mentions",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "heritage_type",
+            "type_order",
+            "driver",
+            "driver_order"
+          ]
+        },
+        {
+          "comment": "joinaggregate adds each heritage type total (type_total) to every row, without removing rows",
+          "joinaggregate": [
+            {
+              "op": "sum",
+              "field": "n",
+              "as": "type_total"
+            }
+          ],
+          "groupby": [
+            "heritage_type"
+          ]
+        },
+        {
+          "comment": "share = this pressure group as a % of its heritage type",
+          "calculate": "datum.n / datum.type_total",
+          "as": "share"
+        },
+        {
+          "comment": "stack 1 (normalize): tile heights within each column add up to 100%, gives y0 and y1",
+          "stack": "n",
+          "groupby": [
+            "heritage_type"
+          ],
+          "offset": "normalize",
+          "sort": [
+            {
+              "field": "driver_order"
+            }
+          ],
+          "as": [
+            "y0",
+            "y1"
+          ]
+        },
+        {
+          "comment": "keep each type total on one row only, so it is counted once in the width stack",
+          "calculate": "datum.driver_order == 0 ? datum.type_total : 0",
+          "as": "width_part"
+        },
+        {
+          "comment": "stack 2 (normalize): column widths = each type share of all mentions, gives wx0 and wx1",
+          "stack": "width_part",
+          "groupby": [],
+          "offset": "normalize",
+          "sort": [
+            {
+              "field": "type_order"
+            },
+            {
+              "field": "driver_order"
+            }
+          ],
+          "as": [
+            "wx0",
+            "wx1"
+          ]
+        },
+        {
+          "comment": "joinaggregate: min wx0 = left edge, max wx1 = right edge, so every tile in a column shares the same width",
+          "joinaggregate": [
+            {
+              "op": "min",
+              "field": "wx0",
+              "as": "x0"
+            },
+            {
+              "op": "max",
+              "field": "wx1",
+              "as": "x1"
+            }
+          ],
+          "groupby": [
+            "heritage_type"
+          ]
+        },
+        {
+          "comment": "middle of each column, for the % labels",
+          "calculate": "(datum.x0 + datum.x1) / 2",
+          "as": "x_mid"
+        },
+        {
+          "comment": "middle of each tile, for the % labels",
+          "calculate": "(datum.y0 + datum.y1) / 2",
+          "as": "y_mid"
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "x0",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              1
+            ]
+          },
+          "axis": null
+        },
+        "y": {
+          "field": "y0",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              1
+            ]
+          },
+          "axis": {
+            "format": "%",
+            "title": "Share of expert mentions",
+            "tickCount": 5,
+            "grid": false
+          }
+        }
+      },
+      "layer": [
+        {
+          "params": [
+            {
+              "comment": "pick: click a tile to select it; starts on Indigenous + Governance so the detail panel is never empty",
+              "name": "pick",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "heritage_type",
+                  "driver"
+                ],
+                "toggle": false
+              },
+              "value": [
+                {
+                  "heritage_type": "Indigenous",
+                  "driver": "Governance"
+                }
+              ]
+            }
+          ],
+          "mark": {
+            "type": "rect",
+            "stroke": "#ffffff",
+            "strokeWidth": 2,
+            "cursor": "pointer"
+          },
+          "encoding": {
+            "x2": {
+              "field": "x1"
+            },
+            "y2": {
+              "field": "y1"
+            },
+            "color": {
+              "field": "driver",
+              "type": "nominal",
+              "title": "Type of pressure",
+              "scale": {
+                "domain": [
+                  "Climate change",
+                  "Industry",
+                  "Population",
+                  "Governance",
+                  "Other"
+                ],
+                "range": [
+                  "#9a6a12",
+                  "#7d6b5d",
+                  "#6f8fa6",
+                  "#2f4b6e",
+                  "#d9d0c4"
+                ]
+              },
+              "legend": {
+                "orient": "bottom",
+                "direction": "horizontal",
+                "title": null,
+                "labelFontSize": 12
+              }
+            },
+            "opacity": {
+              "condition": {
+                "param": "pick",
+                "value": 1
+              },
+              "value": 0.55
+            },
+            "tooltip": [
+              {
+                "field": "heritage_type",
+                "title": "Heritage type"
+              },
+              {
+                "field": "driver",
+                "title": "Type of pressure"
+              },
+              {
+                "field": "share",
+                "title": "Share of mentions",
+                "format": ".0%"
+              },
+              {
+                "field": "n",
+                "title": "Expert mentions"
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "comment": "only label tiles of 8% or more, small tiles are too thin for text",
+              "filter": "datum.share >= 0.08"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "fontSize": 13,
+            "fontWeight": "bold"
+          },
+          "encoding": {
+            "x": {
+              "field": "x_mid",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "y_mid",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "share",
+              "type": "quantitative",
+              "format": ".0%"
+            },
+            "color": {
+              "condition": {
+                "param": "pick",
+                "empty": false,
+                "value": "#ffffff"
+              },
+              "value": "#2b2622"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "comment": "one row per heritage type, so each column label is written once, not once per tile",
+              "filter": "datum.driver_order == 0"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "fontSize": 13,
+            "fontWeight": "bold",
+            "baseline": "bottom",
+            "dy": -6,
+            "color": "#2b2622"
+          },
+          "encoding": {
+            "x": {
+              "field": "x_mid",
+              "type": "quantitative"
+            },
+            "y": {
+              "datum": 1
+            },
+            "text": {
+              "field": "heritage_type"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "comment": "vconcat: stacks the detail title above the detail bar chart",
+      "spacing": 6,
+      "vconcat": [
+        {
+          "width": 180,
+          "height": 48,
+          "transform": [
+            {
+              "comment": "detail title: only the clicked tile",
+              "filter": {
+                "param": "pick"
+              }
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "sum",
+                  "field": "mentions",
+                  "as": "n"
+                }
+              ],
+              "groupby": [
+                "heritage_type",
+                "driver"
+              ]
+            },
+            {
+              "calculate": "datum.heritage_type + ' heritage: ' + datum.driver",
+              "as": "label"
+            }
+          ],
+          "layer": [
+            {
+              "mark": {
+                "type": "text",
+                "align": "left",
+                "baseline": "top",
+                "fontSize": 14,
+                "fontWeight": "bold",
+                "color": "#2b2622"
+              },
+              "encoding": {
+                "text": {
+                  "field": "label"
+                },
+                "x": {
+                  "value": -178
+                },
+                "y": {
+                  "value": 0
+                }
+              }
+            },
+            {
+              "mark": {
+                "type": "text",
+                "align": "left",
+                "baseline": "top",
+                "fontSize": 12,
+                "color": "#6b625a",
+                "lineHeight": 15
+              },
+              "encoding": {
+                "text": {
+                  "value": [
+                    "Number of experts naming each pressure",
+                    "(click a tile to change)"
+                  ]
+                },
+                "x": {
+                  "value": -178
+                },
+                "y": {
+                  "value": 19
+                }
+              }
+            }
+          ]
+        },
+        {
+          "width": 180,
+          "height": {
+            "step": 26
+          },
+          "transform": [
+            {
+              "comment": "detail bars: only pressures behind the clicked tile",
+              "filter": {
+                "param": "pick"
+              }
+            },
+            {
+              "comment": "hide pressures with 0 mentions",
+              "filter": "datum.mentions > 0"
+            }
+          ],
+          "encoding": {
+            "y": {
+              "field": "pressure",
+              "type": "nominal",
+              "sort": "-x",
+              "title": null,
+              "axis": {
+                "labelLimit": 180,
+                "ticks": false,
+                "domain": false,
+                "labelFontSize": 12
+              }
+            },
+            "x": {
+              "field": "mentions",
+              "type": "quantitative",
+              "title": null,
+              "axis": null,
+              "scale": {
+                "domain": [
+                  0,
+                  18
+                ]
+              }
+            }
+          },
+          "layer": [
+            {
+              "mark": {
+                "type": "bar",
+                "height": {
+                  "band": 0.65
+                }
+              },
+              "encoding": {
+                "color": {
+                  "field": "driver",
+                  "type": "nominal",
+                  "scale": {
+                    "domain": [
+                      "Climate change",
+                      "Industry",
+                      "Population",
+                      "Governance",
+                      "Other"
+                    ],
+                    "range": [
+                      "#9a6a12",
+                      "#7d6b5d",
+                      "#6f8fa6",
+                      "#2f4b6e",
+                      "#d9d0c4"
+                    ]
+                  },
+                  "legend": null
+                },
+                "tooltip": [
+                  {
+                    "field": "pressure_full",
+                    "title": "Pressure"
+                  },
+                  {
+                    "field": "heritage_type",
+                    "title": "Heritage type"
+                  },
+                  {
+                    "field": "mentions",
+                    "title": "Experts naming it"
+                  }
+                ]
+              }
+            },
+            {
+              "mark": {
+                "type": "text",
+                "align": "left",
+                "dx": 4,
+                "fontSize": 12,
+                "color": "#2b2622"
+              },
+              "encoding": {
+                "text": {
+                  "field": "mentions",
+                  "type": "quantitative"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "axis": {
+      "labelColor": "#6b625a",
+      "titleColor": "#6b625a",
+      "domain": false,
+      "ticks": false
+    }
+  }
+}

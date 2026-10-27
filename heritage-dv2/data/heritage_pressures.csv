@@ -1,0 +1,93 @@
+driver,pressure,pressure_full,heritage_type,mentions
+Climate change,Rising temperatures,Rising temperatures,Natural,13
+Climate change,Rising temperatures,Rising temperatures,Geoheritage,0
+Climate change,Rising temperatures,Rising temperatures,Indigenous,5
+Climate change,Rising temperatures,Rising temperatures,Historic,2
+Climate change,Changing rainfall,Changing rainfall,Natural,5
+Climate change,Changing rainfall,Changing rainfall,Geoheritage,2
+Climate change,Changing rainfall,Changing rainfall,Indigenous,1
+Climate change,Changing rainfall,Changing rainfall,Historic,0
+Climate change,Rising sea level,Rising sea level,Natural,2
+Climate change,Rising sea level,Rising sea level,Geoheritage,2
+Climate change,Rising sea level,Rising sea level,Indigenous,5
+Climate change,Rising sea level,Rising sea level,Historic,2
+Climate change,Altered fire regimes,Altered fire regimes,Natural,10
+Climate change,Altered fire regimes,Altered fire regimes,Geoheritage,3
+Climate change,Altered fire regimes,Altered fire regimes,Indigenous,5
+Climate change,Altered fire regimes,Altered fire regimes,Historic,5
+Climate change,Extreme weather events,Extreme weather events,Natural,11
+Climate change,Extreme weather events,Extreme weather events,Geoheritage,4
+Climate change,Extreme weather events,Extreme weather events,Indigenous,4
+Climate change,Extreme weather events,Extreme weather events,Historic,14
+Industry,Industrial development,Industrial development,Natural,2
+Industry,Industrial development,Industrial development,Geoheritage,0
+Industry,Industrial development,Industrial development,Indigenous,5
+Industry,Industrial development,Industrial development,Historic,6
+Industry,Industrial pollution,Industrial pollution,Natural,0
+Industry,Industrial pollution,Industrial pollution,Geoheritage,2
+Industry,Industrial pollution,Industrial pollution,Indigenous,0
+Industry,Industrial pollution,Industrial pollution,Historic,0
+Industry,Resource extraction (mining),Resource extraction,Natural,5
+Industry,Resource extraction (mining),Resource extraction,Geoheritage,6
+Industry,Resource extraction (mining),Resource extraction,Indigenous,13
+Industry,Resource extraction (mining),Resource extraction,Historic,2
+Industry,Rural land clearing,Rural development - land clearing,Natural,10
+Industry,Rural land clearing,Rural development - land clearing,Geoheritage,5
+Industry,Rural land clearing,Rural development - land clearing,Indigenous,10
+Industry,Rural land clearing,Rural development - land clearing,Historic,3
+Industry,Rural land use change,Rural development - land use intensification and land use change,Natural,2
+Industry,Rural land use change,Rural development - land use intensification and land use change,Geoheritage,6
+Industry,Rural land use change,Rural development - land use intensification and land use change,Indigenous,1
+Industry,Rural land use change,Rural development - land use intensification and land use change,Historic,5
+Industry,Tourism,Tourism,Natural,2
+Industry,Tourism,Tourism,Geoheritage,5
+Industry,Tourism,Tourism,Indigenous,1
+Industry,Tourism,Tourism,Historic,1
+Population,Population growth,Population growth,Natural,5
+Population,Population growth,Population growth,Geoheritage,6
+Population,Population growth,Population growth,Indigenous,2
+Population,Population growth,Population growth,Historic,1
+Population,Urban densification,Population shift resulting in urban densification and renewal,Natural,0
+Population,Urban densification,Population shift resulting in urban densification and renewal,Geoheritage,0
+Population,Urban densification,Population shift resulting in urban densification and renewal,Indigenous,3
+Population,Urban densification,Population shift resulting in urban densification and renewal,Historic,7
+Population,Urban spread,Population shift resulting in urban spread,Natural,0
+Population,Urban spread,Population shift resulting in urban spread,Geoheritage,1
+Population,Urban spread,Population shift resulting in urban spread,Indigenous,3
+Population,Urban spread,Population shift resulting in urban spread,Historic,6
+Population,Infrastructure development,"Service and infrastructure development (e.g., energy, water, transport, supply)",Natural,1
+Population,Infrastructure development,"Service and infrastructure development (e.g., energy, water, transport, supply)",Geoheritage,3
+Population,Infrastructure development,"Service and infrastructure development (e.g., energy, water, transport, supply)",Indigenous,2
+Population,Infrastructure development,"Service and infrastructure development (e.g., energy, water, transport, supply)",Historic,2
+Population,Recreation and leisure,Recreation and leisure activities,Natural,2
+Population,Recreation and leisure,Recreation and leisure activities,Geoheritage,4
+Population,Recreation and leisure,Recreation and leisure activities,Indigenous,0
+Population,Recreation and leisure,Recreation and leisure activities,Historic,0
+Population,Community perceptions of value,Community perceptions of value,Natural,2
+Population,Community perceptions of value,Community perceptions of value,Geoheritage,4
+Population,Community perceptions of value,Community perceptions of value,Indigenous,6
+Population,Community perceptions of value,Community perceptions of value,Historic,7
+Governance,Inadequate legal protection,Inadequate protections (poor statutory controls and poor governance),Natural,5
+Governance,Inadequate legal protection,Inadequate protections (poor statutory controls and poor governance),Geoheritage,12
+Governance,Inadequate legal protection,Inadequate protections (poor statutory controls and poor governance),Indigenous,12
+Governance,Inadequate legal protection,Inadequate protections (poor statutory controls and poor governance),Historic,10
+Governance,Community aspirations not met,"Inadequate realisation of community aspirations (relates to ownership, engagement, wellbeing)",Natural,1
+Governance,Community aspirations not met,"Inadequate realisation of community aspirations (relates to ownership, engagement, wellbeing)",Geoheritage,3
+Governance,Community aspirations not met,"Inadequate realisation of community aspirations (relates to ownership, engagement, wellbeing)",Indigenous,9
+Governance,Community aspirations not met,"Inadequate realisation of community aspirations (relates to ownership, engagement, wellbeing)",Historic,5
+Governance,Inadequate resourcing,Inadequate resourcing for heritage conservation/management,Natural,11
+Governance,Inadequate resourcing,Inadequate resourcing for heritage conservation/management,Geoheritage,14
+Governance,Inadequate resourcing,Inadequate resourcing for heritage conservation/management,Indigenous,15
+Governance,Inadequate resourcing,Inadequate resourcing for heritage conservation/management,Historic,17
+Other,Invasive species,Invasive species,Natural,10
+Other,Invasive species,Invasive species,Geoheritage,0
+Other,Invasive species,Invasive species,Indigenous,1
+Other,Invasive species,Invasive species,Historic,0
+Other,Human disasters,"Human disasters (e.g., war, pandemics, infrastructure failure)",Natural,0
+Other,Human disasters,"Human disasters (e.g., war, pandemics, infrastructure failure)",Geoheritage,0
+Other,Human disasters,"Human disasters (e.g., war, pandemics, infrastructure failure)",Indigenous,1
+Other,Human disasters,"Human disasters (e.g., war, pandemics, infrastructure failure)",Historic,0
+Other,Other,Other (please specify),Natural,0
+Other,Other,Other (please specify),Geoheritage,2
+Other,Other,Other (please specify),Indigenous,3
+Other,Other,Other (please specify),Historic,4

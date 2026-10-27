@@ -1,0 +1,325 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Pareto chart: Australian Government funding for managing each World Heritage property, 2011-12 to 2015-16, sorted from most to least, with the running total share of all funding.",
+  "width": "container",
+  "height": 340,
+  "background": null,
+  "data": {
+    "url": "data/world_heritage_funding.csv",
+    "format": {
+      "parse": {
+        "funding_m": "number"
+      }
+    }
+  },
+  "params": [
+    {
+      "name": "fy",
+      "value": "All five years",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All five years",
+          "2011-12",
+          "2012-13",
+          "2013-14",
+          "2014-15",
+          "2015-16"
+        ],
+        "name": "Financial year: "
+      }
+    }
+  ],
+  "transform": [
+    {
+      "filter": "fy == 'All five years' || datum.year == fy"
+    },
+    {
+      "aggregate": [
+        {
+          "op": "sum",
+          "field": "funding_m",
+          "as": "total"
+        }
+      ],
+      "groupby": [
+        "property",
+        "property_full",
+        "category"
+      ]
+    },
+    {
+      "filter": "datum.total > 0"
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "sum",
+          "field": "total",
+          "as": "grand"
+        }
+      ]
+    },
+    {
+      "window": [
+        {
+          "op": "row_number",
+          "as": "rank"
+        },
+        {
+          "op": "sum",
+          "field": "total",
+          "as": "running"
+        }
+      ],
+      "sort": [
+        {
+          "field": "total",
+          "order": "descending"
+        }
+      ]
+    },
+    {
+      "calculate": "datum.running / datum.grand",
+      "as": "cum_share"
+    },
+    {
+      "calculate": "datum.total / datum.grand",
+      "as": "share"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "property",
+      "type": "nominal",
+      "sort": {
+        "field": "rank",
+        "op": "min",
+        "order": "ascending"
+      },
+      "title": null,
+      "axis": {
+        "labelAngle": -40,
+        "labelFontSize": 11,
+        "labelLimit": 150,
+        "ticks": false,
+        "domain": false,
+        "labelColor": {
+          "condition": {
+            "test": "datum.value == 'Ningaloo Coast'",
+            "value": "#3c3831"
+          },
+          "value": "#5b5850"
+        },
+        "labelFontWeight": {
+          "condition": {
+            "test": "datum.value == 'Ningaloo Coast'",
+            "value": "bold"
+          },
+          "value": "normal"
+        }
+      }
+    }
+  },
+  "layer": [
+    {
+      "encoding": {
+        "y": {
+          "field": "total",
+          "type": "quantitative",
+          "title": "Funding ($ million)",
+          "axis": {
+            "tickCount": 5,
+            "gridColor": "#e6dfd2",
+            "domain": false,
+            "ticks": false,
+            "titleColor": "#5b5850",
+            "labelColor": "#5b5850"
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "bar",
+            "width": {
+              "band": 0.75
+            },
+            "cornerRadiusEnd": 2
+          },
+          "encoding": {
+            "color": {
+              "field": "category",
+              "type": "nominal",
+              "title": "World Heritage category",
+              "scale": {
+                "domain": [
+                  "Natural",
+                  "Mixed",
+                  "Cultural"
+                ],
+                "range": [
+                  "#2f4b6e",
+                  "#d9bf90",
+                  "#8a8376"
+                ]
+              },
+              "legend": {
+                "orient": "top",
+                "direction": "horizontal",
+                "titleOrient": "left",
+                "labelFontSize": 12,
+                "titleFontSize": 12
+              }
+            },
+            "stroke": {
+              "condition": {
+                "test": "datum.property == 'Ningaloo Coast'",
+                "value": "#3c3831"
+              },
+              "value": null
+            },
+            "strokeWidth": {
+              "value": 2
+            },
+            "tooltip": [
+              {
+                "field": "property_full",
+                "title": "World Heritage property"
+              },
+              {
+                "field": "category",
+                "title": "Category"
+              },
+              {
+                "field": "total",
+                "title": "Funding ($m)",
+                "format": ",.2f"
+              },
+              {
+                "field": "share",
+                "title": "Share of total",
+                "format": ".1%"
+              },
+              {
+                "field": "cum_share",
+                "title": "Running total",
+                "format": ".0%"
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.property == 'Ningaloo Coast'"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "angle": 0,
+            "dy": -10,
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "#3c3831"
+          },
+          "encoding": {
+            "text": {
+              "value": "Ningaloo"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "layer": [
+        {
+          "mark": {
+            "type": "line",
+            "color": "#3c3831",
+            "strokeWidth": 2,
+            "point": {
+              "filled": true,
+              "size": 30,
+              "color": "#3c3831"
+            }
+          },
+          "encoding": {
+            "y": {
+              "field": "cum_share",
+              "type": "quantitative",
+              "title": "Running total (% of all funding)",
+              "scale": {
+                "domain": [
+                  0,
+                  1
+                ]
+              },
+              "axis": {
+                "format": "%",
+                "orient": "right",
+                "grid": false,
+                "tickCount": 5,
+                "domain": false,
+                "ticks": false,
+                "titleColor": "#5b5850",
+                "labelColor": "#5b5850"
+              }
+            },
+            "tooltip": [
+              {
+                "field": "property_full",
+                "title": "Up to and including"
+              },
+              {
+                "field": "cum_share",
+                "title": "Running total",
+                "format": ".0%"
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.rank == 3"
+            },
+            {
+              "calculate": "'The top 3 properties get ' + format(datum.cum_share, '.0%') + ' of all funding'",
+              "as": "note"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 10,
+            "dy": 14,
+            "fontSize": 13,
+            "fontWeight": "bold",
+            "color": "#3c3831"
+          },
+          "encoding": {
+            "y": {
+              "field": "cum_share",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "note"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "resolve": {
+    "scale": {
+      "y": "independent"
+    }
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif"
+  }
+}

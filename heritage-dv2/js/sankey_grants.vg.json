@@ -1,0 +1,517 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Sankey (flow) diagram: Australian Heritage Grants Round 8 (2025-26) funding flowing from the heritage type of each National Heritage place to what the money is for.",
+  "width": 470,
+  "height": 340,
+  "background": null,
+  "data": {
+    "url": "data/heritage_grants_round8.csv",
+    "format": {
+      "parse": {
+        "amount": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "aggregate": [
+        {
+          "op": "sum",
+          "field": "amount",
+          "as": "amount"
+        },
+        {
+          "op": "count",
+          "as": "projects"
+        }
+      ],
+      "groupby": [
+        "heritage_type",
+        "purpose"
+      ]
+    },
+    {
+      "calculate": "indexof(['Historic', 'Indigenous', 'Natural'], datum.heritage_type)",
+      "as": "left_order"
+    },
+    {
+      "calculate": "indexof(['Repair and conservation works', 'Interpretation and access', 'Management and conservation plans', 'Research, monitoring and recovery'], datum.purpose)",
+      "as": "right_order"
+    },
+    {
+      "stack": "amount",
+      "groupby": [],
+      "sort": [
+        {
+          "field": "left_order"
+        },
+        {
+          "field": "right_order"
+        }
+      ],
+      "as": [
+        "l0",
+        "l1"
+      ]
+    },
+    {
+      "stack": "amount",
+      "groupby": [],
+      "sort": [
+        {
+          "field": "right_order"
+        },
+        {
+          "field": "left_order"
+        }
+      ],
+      "as": [
+        "r0",
+        "r1"
+      ]
+    },
+    {
+      "calculate": "datum.l0 + datum.left_order * 250000",
+      "as": "l0"
+    },
+    {
+      "calculate": "datum.l1 + datum.left_order * 250000",
+      "as": "l1"
+    },
+    {
+      "calculate": "datum.r0 + datum.right_order * 250000",
+      "as": "r0"
+    },
+    {
+      "calculate": "datum.r1 + datum.right_order * 250000",
+      "as": "r1"
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "sum",
+          "field": "amount",
+          "as": "left_total"
+        },
+        {
+          "op": "sum",
+          "field": "projects",
+          "as": "left_projects"
+        },
+        {
+          "op": "min",
+          "field": "l0",
+          "as": "left_top"
+        },
+        {
+          "op": "max",
+          "field": "l1",
+          "as": "left_bottom"
+        }
+      ],
+      "groupby": [
+        "heritage_type"
+      ]
+    },
+    {
+      "joinaggregate": [
+        {
+          "op": "sum",
+          "field": "amount",
+          "as": "right_total"
+        },
+        {
+          "op": "sum",
+          "field": "projects",
+          "as": "right_projects"
+        },
+        {
+          "op": "min",
+          "field": "r0",
+          "as": "right_top"
+        },
+        {
+          "op": "max",
+          "field": "r1",
+          "as": "right_bottom"
+        }
+      ],
+      "groupby": [
+        "purpose"
+      ]
+    },
+    {
+      "calculate": "datum.heritage_type + ' → ' + datum.purpose",
+      "as": "flow"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "type": "quantitative",
+      "scale": {
+        "reverse": true,
+        "nice": false,
+        "zero": true
+      },
+      "axis": null
+    }
+  },
+  "layer": [
+    {
+      "transform": [
+        {
+          "calculate": "[0, 1, 2, 3]",
+          "as": "pt"
+        },
+        {
+          "flatten": [
+            "pt"
+          ]
+        },
+        {
+          "calculate": "[0, 0.35, 0.65, 1][datum.pt]",
+          "as": "x"
+        },
+        {
+          "calculate": "datum.pt < 2 ? datum.l0 : datum.r0",
+          "as": "y_top"
+        },
+        {
+          "calculate": "datum.pt < 2 ? datum.l1 : datum.r1",
+          "as": "y_bottom"
+        }
+      ],
+      "params": [
+        {
+          "name": "hover_flow",
+          "select": {
+            "type": "point",
+            "fields": [
+              "flow"
+            ],
+            "on": "pointerover",
+            "clear": "pointerout"
+          }
+        }
+      ],
+      "mark": {
+        "type": "area",
+        "interpolate": "monotone",
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              -0.016,
+              1.016
+            ]
+          },
+          "axis": null
+        },
+        "y": {
+          "field": "y_top"
+        },
+        "y2": {
+          "field": "y_bottom"
+        },
+        "detail": {
+          "field": "flow"
+        },
+        "color": {
+          "field": "heritage_type",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Historic",
+              "Natural",
+              "Indigenous"
+            ],
+            "range": [
+              "#8a8376",
+              "#2f4b6e",
+              "#9a6a12"
+            ]
+          },
+          "legend": null
+        },
+        "opacity": {
+          "condition": {
+            "param": "hover_flow",
+            "empty": false,
+            "value": 0.85
+          },
+          "value": 0.45
+        },
+        "tooltip": [
+          {
+            "field": "heritage_type",
+            "title": "Heritage type"
+          },
+          {
+            "field": "purpose",
+            "title": "Funding for"
+          },
+          {
+            "field": "amount",
+            "title": "Amount (GST excl.)",
+            "format": "$,.0f"
+          },
+          {
+            "field": "projects",
+            "title": "Projects"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "max",
+              "field": "left_top",
+              "as": "top"
+            },
+            {
+              "op": "max",
+              "field": "left_bottom",
+              "as": "bottom"
+            }
+          ],
+          "groupby": [
+            "heritage_type"
+          ]
+        }
+      ],
+      "mark": {
+        "type": "rect",
+        "x": 0,
+        "x2": 7
+      },
+      "encoding": {
+        "y": {
+          "field": "top"
+        },
+        "y2": {
+          "field": "bottom"
+        },
+        "color": {
+          "field": "heritage_type",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Historic",
+              "Natural",
+              "Indigenous"
+            ],
+            "range": [
+              "#8a8376",
+              "#2f4b6e",
+              "#9a6a12"
+            ]
+          },
+          "legend": null
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "max",
+              "field": "left_top",
+              "as": "top"
+            },
+            {
+              "op": "max",
+              "field": "left_bottom",
+              "as": "bottom"
+            },
+            {
+              "op": "max",
+              "field": "left_total",
+              "as": "total"
+            },
+            {
+              "op": "max",
+              "field": "left_projects",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "heritage_type"
+          ]
+        },
+        {
+          "calculate": "(datum.top + datum.bottom) / 2",
+          "as": "mid"
+        },
+        {
+          "calculate": "[datum.heritage_type + ' places', format(datum.total / 1e6, '$.2f') + 'm · ' + datum.n + (datum.n == 1 ? ' project' : ' projects')]",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "baseline": "middle",
+        "x": -8,
+        "fontSize": 13,
+        "lineHeight": 16,
+        "fontWeight": {
+          "expr": "datum.heritage_type == 'Indigenous' ? 'bold' : 'normal'"
+        }
+      },
+      "encoding": {
+        "y": {
+          "field": "mid"
+        },
+        "text": {
+          "field": "label"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.heritage_type == 'Indigenous'",
+            "value": "#9a6a12"
+          },
+          "value": "#3c3831"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "max",
+              "field": "right_top",
+              "as": "top"
+            },
+            {
+              "op": "max",
+              "field": "right_bottom",
+              "as": "bottom"
+            }
+          ],
+          "groupby": [
+            "purpose"
+          ]
+        }
+      ],
+      "mark": {
+        "type": "rect",
+        "x": {
+          "expr": "width - 7"
+        },
+        "x2": {
+          "expr": "width"
+        },
+        "color": "#5b5850"
+      },
+      "encoding": {
+        "y": {
+          "field": "top"
+        },
+        "y2": {
+          "field": "bottom"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "aggregate": [
+            {
+              "op": "max",
+              "field": "right_top",
+              "as": "top"
+            },
+            {
+              "op": "max",
+              "field": "right_bottom",
+              "as": "bottom"
+            },
+            {
+              "op": "max",
+              "field": "right_total",
+              "as": "total"
+            },
+            {
+              "op": "max",
+              "field": "right_projects",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "purpose"
+          ]
+        },
+        {
+          "calculate": "(datum.top + datum.bottom) / 2",
+          "as": "mid"
+        },
+        {
+          "calculate": "[datum.purpose, format(datum.total / 1e6, '$.2f') + 'm · ' + datum.n + (datum.n == 1 ? ' project' : ' projects')]",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "x": {
+          "expr": "width + 8"
+        },
+        "fontSize": 13,
+        "lineHeight": 16,
+        "color": "#3c3831"
+      },
+      "encoding": {
+        "y": {
+          "field": "mid"
+        },
+        "text": {
+          "field": "label"
+        }
+      }
+    },
+    {
+      "comment": "Annotation: the Indigenous gap",
+      "data": {
+        "values": [
+          {}
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "baseline": "top",
+        "x": {
+          "expr": "width / 2"
+        },
+        "y": {
+          "expr": "height + 12"
+        },
+        "fontSize": 12,
+        "fontStyle": "italic",
+        "color": "#9a6a12",
+        "fontWeight": 600
+      },
+      "encoding": {
+        "text": {
+          "value": "Only 1 of 20 projects (2% of the money) went to a place listed for its Indigenous values"
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif"
+  }
+}

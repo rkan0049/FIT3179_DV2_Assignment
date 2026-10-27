@@ -1,0 +1,437 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Bivariate choropleth (Map 5): National Heritage places per million (June 2020) against historic places added to state registers per million (2016-17 to 2019-20). Each measure is split into low and high at the median of the eight states and territories. Click a legend square to highlight its states. This shows listing activity, not protection quality.",
+  "background": null,
+  "spacing": 28,
+  "hconcat": [
+    {
+      "comment": "Map: colour = one of four combined classes",
+      "width": 520,
+      "height": 420,
+      "projection": {
+        "type": "conicEqualArea",
+        "parallels": [
+          -18,
+          -36
+        ],
+        "rotate": [
+          -132,
+          0
+        ]
+      },
+      "layer": [
+        {
+          "data": {
+            "url": "data/aus_states.topojson",
+            "format": {
+              "type": "topojson",
+              "feature": "states"
+            }
+          },
+          "transform": [
+            {
+              "lookup": "properties.STATE",
+              "from": {
+                "data": {
+                  "url": "data/heritage_bivariate_2020.csv"
+                },
+                "key": "abbr",
+                "fields": [
+                  "state",
+                  "nhl_2020",
+                  "nhl_per_million",
+                  "historic_added_2016_2020",
+                  "historic_added_per_million",
+                  "class"
+                ]
+              }
+            },
+            {
+              "filter": "isValid(datum.class)"
+            }
+          ],
+          "params": [
+            {
+              "name": "biv_hover",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "class"
+                ],
+                "on": "pointerover",
+                "clear": "pointerout"
+              }
+            }
+          ],
+          "mark": {
+            "type": "geoshape",
+            "stroke": "#ffffff",
+            "strokeWidth": 1.5,
+            "cursor": "pointer"
+          },
+          "encoding": {
+            "color": {
+              "field": "class",
+              "type": "nominal",
+              "scale": {
+                "domain": [
+                  "Low recognition · Low recent additions",
+                  "Low recognition · High recent additions",
+                  "High recognition · Low recent additions",
+                  "High recognition · High recent additions"
+                ],
+                "range": [
+                  "#ece5d6",
+                  "#9fb4c7",
+                  "#d9bf90",
+                  "#4f5b66"
+                ]
+              },
+              "legend": null
+            },
+            "opacity": {
+              "condition": [
+                {
+                  "param": "class_pick",
+                  "empty": true,
+                  "value": 1
+                }
+              ],
+              "value": 0.25
+            },
+            "strokeWidth": {
+              "condition": {
+                "param": "biv_hover",
+                "empty": false,
+                "value": 2.5
+              },
+              "value": 1.5
+            },
+            "tooltip": [
+              {
+                "field": "state",
+                "title": "State / territory"
+              },
+              {
+                "field": "nhl_2020",
+                "title": "National Heritage places (June 2020)"
+              },
+              {
+                "field": "nhl_per_million",
+                "title": "National places per million",
+                "format": ".1f"
+              },
+              {
+                "field": "historic_added_2016_2020",
+                "title": "Historic places added 2016 to 2020"
+              },
+              {
+                "field": "historic_added_per_million",
+                "title": "Added per million",
+                "format": ".1f"
+              },
+              {
+                "field": "class",
+                "title": "Group"
+              }
+            ]
+          }
+        },
+        {
+          "comment": "Annotation: leader line out to the tiny ACT",
+          "data": {
+            "values": [
+              {
+                "lon": 149.1,
+                "lat": -35.4,
+                "lon2": 154.6,
+                "lat2": -37.6
+              }
+            ]
+          },
+          "mark": {
+            "type": "rule",
+            "color": "#3c3831",
+            "strokeWidth": 0.8
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "longitude2": {
+              "field": "lon2"
+            },
+            "latitude2": {
+              "field": "lat2"
+            }
+          }
+        },
+        {
+          "comment": "Annotations",
+          "data": {
+            "values": [
+              {
+                "lon": 154.9,
+                "lat": -37.6,
+                "al": "left",
+                "c": "#3c3831",
+                "t": [
+                  "ACT: most new",
+                  "additions (84 per million)"
+                ]
+              },
+              {
+                "lon": 149.6,
+                "lat": -44.3,
+                "al": "left",
+                "c": "#3c3831",
+                "t": [
+                  "Tasmania: most national places",
+                  "per person, few new additions"
+                ]
+              },
+              {
+                "lon": 133.4,
+                "lat": -19.5,
+                "al": "center",
+                "c": "#ffffff",
+                "t": [
+                  "NT: high",
+                  "on both"
+                ]
+              },
+              {
+                "lon": 146.6,
+                "lat": -32.4,
+                "al": "center",
+                "c": "#3c3831",
+                "t": [
+                  "NSW: low",
+                  "on both"
+                ]
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "lineHeight": 15,
+            "align": {
+              "expr": "datum.al"
+            },
+            "fontSize": 12,
+            "fontStyle": "italic",
+            "fontWeight": 600
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "t"
+            },
+            "color": {
+              "condition": {
+                "test": "datum.c == '#ffffff'",
+                "value": "#ffffff"
+              },
+              "value": "#3c3831"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "comment": "2 x 2 legend: click a square to highlight those states on the map",
+      "width": 170,
+      "height": 170,
+      "title": {
+        "text": "Click a square",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "color": "#5b5850",
+        "anchor": "start"
+      },
+      "data": {
+        "values": [
+          {
+            "rec": "Low",
+            "add": "Low",
+            "class": "Low recognition · Low recent additions",
+            "states": "NSW · VIC · SA",
+            "label": [
+              "NSW · VIC",
+              "SA"
+            ]
+          },
+          {
+            "rec": "Low",
+            "add": "High",
+            "class": "Low recognition · High recent additions",
+            "states": "QLD",
+            "label": [
+              "QLD"
+            ]
+          },
+          {
+            "rec": "High",
+            "add": "Low",
+            "class": "High recognition · Low recent additions",
+            "states": "TAS",
+            "label": [
+              "TAS"
+            ]
+          },
+          {
+            "rec": "High",
+            "add": "High",
+            "class": "High recognition · High recent additions",
+            "states": "WA · NT · ACT",
+            "label": [
+              "WA · NT",
+              "ACT"
+            ]
+          }
+        ]
+      },
+      "encoding": {
+        "x": {
+          "field": "add",
+          "type": "ordinal",
+          "sort": [
+            "Low",
+            "High"
+          ],
+          "title": "New state additions →",
+          "axis": {
+            "orient": "bottom",
+            "ticks": false,
+            "domain": false,
+            "labelAngle": 0,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal"
+          }
+        },
+        "y": {
+          "field": "rec",
+          "type": "ordinal",
+          "sort": [
+            "High",
+            "Low"
+          ],
+          "title": "National listings →",
+          "axis": {
+            "ticks": false,
+            "domain": false,
+            "titleFontSize": 11,
+            "titleFontWeight": "normal"
+          }
+        }
+      },
+      "layer": [
+        {
+          "params": [
+            {
+              "name": "class_pick",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "class"
+                ]
+              }
+            }
+          ],
+          "mark": {
+            "type": "rect",
+            "stroke": "#ffffff",
+            "strokeWidth": 3,
+            "cursor": "pointer"
+          },
+          "encoding": {
+            "color": {
+              "field": "class",
+              "type": "nominal",
+              "scale": {
+                "domain": [
+                  "Low recognition · Low recent additions",
+                  "Low recognition · High recent additions",
+                  "High recognition · Low recent additions",
+                  "High recognition · High recent additions"
+                ],
+                "range": [
+                  "#ece5d6",
+                  "#9fb4c7",
+                  "#d9bf90",
+                  "#4f5b66"
+                ]
+              },
+              "legend": null
+            },
+            "opacity": {
+              "condition": {
+                "param": "class_pick",
+                "value": 1
+              },
+              "value": 0.35
+            },
+            "tooltip": [
+              {
+                "field": "class",
+                "title": "Group"
+              },
+              {
+                "field": "states",
+                "title": "States"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 12,
+            "fontWeight": 600,
+            "lineHeight": 14
+          },
+          "encoding": {
+            "text": {
+              "field": "label"
+            },
+            "color": {
+              "condition": {
+                "test": "datum.add == 'High' && datum.rec == 'High'",
+                "value": "#ffffff"
+              },
+              "value": "#3c3831"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "resolve": {
+    "scale": {
+      "color": "shared"
+    }
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "axis": {
+      "labelColor": "#3c3831",
+      "titleColor": "#5b5850",
+      "labelFontSize": 11
+    }
+  }
+}

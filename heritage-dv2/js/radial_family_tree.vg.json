@@ -1,0 +1,443 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "Radial dendrogram (Vega): the National Heritage List as a family tree. The List branches into three heritage types, then states and territories, then all 126 listed places.",
+  "width": 760,
+  "height": 760,
+  "padding": 10,
+  "autosize": "none",
+  "background": null,
+  "signals": [
+    {
+      "name": "radius",
+      "value": 230
+    },
+    {
+      "name": "originX",
+      "update": "width / 2"
+    },
+    {
+      "name": "originY",
+      "update": "height / 2"
+    },
+    {
+      "name": "hover_type",
+      "value": null,
+      "on": [
+        {
+          "events": "@leaf_labels:pointerover, @nodes:pointerover",
+          "update": "datum.class || datum.key_type || null"
+        },
+        {
+          "events": "@leaf_labels:pointerout, @nodes:pointerout",
+          "update": "null"
+        }
+      ]
+    }
+  ],
+  "data": [
+    {
+      "name": "places",
+      "url": "data/nhl_places.csv",
+      "format": {
+        "type": "csv"
+      },
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "indexof(['Historic', 'Natural', 'Indigenous'], datum.class)",
+          "as": "type_order"
+        }
+      ]
+    },
+    {
+      "name": "type_counts",
+      "source": "places",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": [
+            "class"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tree",
+      "source": "places",
+      "transform": [
+        {
+          "type": "collect",
+          "sort": {
+            "field": [
+              "type_order",
+              "state",
+              "name"
+            ]
+          }
+        },
+        {
+          "type": "nest",
+          "keys": [
+            "class",
+            "state"
+          ],
+          "generate": true
+        },
+        {
+          "type": "tree",
+          "method": "cluster",
+          "size": [
+            1,
+            {
+              "signal": "radius"
+            }
+          ],
+          "as": [
+            "alpha",
+            "r",
+            "depth",
+            "children"
+          ]
+        },
+        {
+          "type": "formula",
+          "expr": "(360 * datum.alpha + 270) % 360",
+          "as": "angle"
+        },
+        {
+          "type": "formula",
+          "expr": "PI * datum.angle / 180",
+          "as": "radians"
+        },
+        {
+          "type": "formula",
+          "expr": "inrange(datum.angle, [90, 270])",
+          "as": "leftside"
+        },
+        {
+          "type": "formula",
+          "expr": "originX + datum.r * cos(datum.radians)",
+          "as": "x"
+        },
+        {
+          "type": "formula",
+          "expr": "originY + datum.r * sin(datum.radians)",
+          "as": "y"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.depth == 1 ? datum.key : (datum.depth == 2 ? datum.values[0].class : (datum.depth == 3 ? datum.class : null))",
+          "as": "key_type"
+        },
+        {
+          "type": "lookup",
+          "from": "type_counts",
+          "key": "class",
+          "fields": [
+            "key"
+          ],
+          "values": [
+            "count"
+          ],
+          "as": [
+            "type_count"
+          ],
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "links",
+      "source": "tree",
+      "transform": [
+        {
+          "type": "treelinks"
+        },
+        {
+          "type": "linkpath",
+          "shape": "orthogonal",
+          "orient": "radial",
+          "sourceX": "source.radians",
+          "sourceY": "source.r",
+          "targetX": "target.radians",
+          "targetY": "target.r"
+        }
+      ]
+    },
+    {
+      "name": "leaves",
+      "source": "tree",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "!datum.children"
+        }
+      ]
+    },
+    {
+      "name": "inner",
+      "source": "tree",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum.children && datum.depth > 0"
+        }
+      ]
+    },
+    {
+      "name": "tree_notes",
+      "values": [
+        {
+          "x": 4,
+          "y": 18,
+          "t": [
+            "70 of 126 places are historic,",
+            "more than half the List"
+          ],
+          "c": "#6b655a"
+        },
+        {
+          "x": 4,
+          "y": 722,
+          "t": [
+            "Only 20 places are listed for",
+            "Indigenous values"
+          ],
+          "c": "#9a6a12"
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "colour",
+      "type": "ordinal",
+      "domain": [
+        "Historic",
+        "Natural",
+        "Indigenous"
+      ],
+      "range": [
+        "#8a8376",
+        "#2f4b6e",
+        "#9a6a12"
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "type": "path",
+      "from": {
+        "data": "links"
+      },
+      "encode": {
+        "update": {
+          "x": {
+            "signal": "originX"
+          },
+          "y": {
+            "signal": "originY"
+          },
+          "path": {
+            "field": "path"
+          },
+          "stroke": {
+            "signal": "datum.target.key_type ? scale('colour', datum.target.key_type) : '#aca18e'"
+          },
+          "strokeWidth": {
+            "signal": "datum.target.depth == 1 ? 3 : (datum.target.depth == 2 ? 1.6 : 0.8)"
+          },
+          "strokeOpacity": {
+            "signal": "hover_type && datum.target.key_type != hover_type ? 0.12 : 0.6"
+          }
+        }
+      }
+    },
+    {
+      "type": "symbol",
+      "name": "nodes",
+      "from": {
+        "data": "tree"
+      },
+      "encode": {
+        "enter": {
+          "shape": {
+            "value": "circle"
+          },
+          "stroke": {
+            "value": "#ffffff"
+          },
+          "strokeWidth": {
+            "value": 1
+          }
+        },
+        "update": {
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "field": "y"
+          },
+          "size": {
+            "signal": "datum.depth == 0 ? 500 : (datum.depth == 1 ? 260 : (datum.depth == 2 ? 70 : 28))"
+          },
+          "fill": {
+            "signal": "datum.key_type ? scale('colour', datum.key_type) : '#3c3831'"
+          },
+          "fillOpacity": {
+            "signal": "hover_type && datum.key_type && datum.key_type != hover_type ? 0.15 : 1"
+          },
+          "cursor": {
+            "signal": "datum.depth == 3 ? 'pointer' : 'default'"
+          },
+          "href": {
+            "signal": "datum.depth == 3 ? datum.url : ''"
+          },
+          "tooltip": {
+            "signal": "datum.depth == 3 ? {'title': datum.name, 'Type': datum.class, 'State': datum.state, 'Year listed': datum.year} : (datum.depth == 2 ? {'title': datum.key + ' (' + datum.key_type + ')', 'Places': length(datum.values)} : (datum.depth == 1 ? {'title': datum.key + ' heritage', 'Places': datum.type_count} : {'title': 'National Heritage List', 'Places': length(data('leaves'))}))"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "name": "leaf_labels",
+      "from": {
+        "data": "leaves"
+      },
+      "encode": {
+        "enter": {
+          "font": {
+            "value": "'Source Sans 3', sans-serif"
+          },
+          "fontSize": {
+            "value": 8.5
+          },
+          "baseline": {
+            "value": "middle"
+          },
+          "limit": {
+            "value": 118
+          }
+        },
+        "update": {
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "field": "y"
+          },
+          "dx": {
+            "signal": "datum.leftside ? -6 : 6"
+          },
+          "angle": {
+            "signal": "datum.leftside ? datum.angle - 180 : datum.angle"
+          },
+          "align": {
+            "signal": "datum.leftside ? 'right' : 'left'"
+          },
+          "text": {
+            "field": "name"
+          },
+          "fill": {
+            "signal": "scale('colour', datum.class)"
+          },
+          "fillOpacity": {
+            "signal": "hover_type && datum.class != hover_type ? 0.15 : 1"
+          },
+          "cursor": {
+            "value": "pointer"
+          },
+          "href": {
+            "field": "url"
+          },
+          "tooltip": {
+            "signal": "{'title': datum.name, 'Type': datum.class, 'State': datum.state, 'Year listed': datum.year}"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {
+        "data": "inner"
+      },
+      "interactive": false,
+      "encode": {
+        "enter": {
+          "font": {
+            "value": "'Source Sans 3', sans-serif"
+          },
+          "baseline": {
+            "value": "middle"
+          },
+          "align": {
+            "value": "center"
+          }
+        },
+        "update": {
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "signal": "datum.y + (datum.depth == 1 ? -15 : -9)"
+          },
+          "text": {
+            "field": "key"
+          },
+          "fontSize": {
+            "signal": "datum.depth == 1 ? 13 : 9"
+          },
+          "fontWeight": {
+            "value": "bold"
+          },
+          "fill": {
+            "signal": "datum.depth == 1 ? scale('colour', datum.key) : '#3c3831'"
+          },
+          "fillOpacity": {
+            "signal": "hover_type && datum.key_type != hover_type ? 0.15 : 1"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "interactive": false,
+      "comment": "Annotations in the empty corners",
+      "from": {
+        "data": "tree_notes"
+      },
+      "encode": {
+        "enter": {
+          "font": {
+            "value": "'Source Sans 3', sans-serif"
+          },
+          "fontSize": {
+            "value": 12.5
+          },
+          "fontStyle": {
+            "value": "italic"
+          },
+          "fontWeight": {
+            "value": 600
+          },
+          "x": {
+            "field": "x"
+          },
+          "y": {
+            "field": "y"
+          },
+          "text": {
+            "field": "t"
+          },
+          "fill": {
+            "field": "c"
+          },
+          "lineHeight": {
+            "value": 16
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+id,parent,name,places,status
+all,,All National Heritage places,120,root
+answered,all,Survey answered,102,known
+no_answer,all,No survey answer,18,gap
+plan,answered,Management plan in place,85,known
+no_plan,answered,No plan reported,17,bad
+effective_plus,plan,Rated effective or better,73,good
+not_very,plan,Rated not very effective,4,bad
+not_rated,plan,Effectiveness not rated,8,gap
+extremely,effective_plus,Extremely effective,8,good
+very,effective_plus,Very effective,26,good
+effective,effective_plus,Effective,39,good

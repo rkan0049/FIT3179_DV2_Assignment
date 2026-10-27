@@ -1,0 +1,219 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Radial bar chart: share of Indigenous stakeholders surveyed for State of the Environment 2021 who named each pressure as one of the most significant for Indigenous heritage.",
+  "width": 400,
+  "height": 400,
+  "background": null,
+  "data": {
+    "url": "data/indigenous_stakeholder_pressures.csv"
+  },
+  "transform": [
+    {
+      "window": [
+        {
+          "op": "row_number",
+          "as": "rank"
+        }
+      ],
+      "sort": [
+        {
+          "field": "percent",
+          "order": "descending"
+        }
+      ]
+    },
+    {
+      "calculate": "200 - datum.rank * 21",
+      "as": "r_outer"
+    },
+    {
+      "calculate": "datum.r_outer - 15",
+      "as": "r_inner"
+    },
+    {
+      "calculate": "(datum.r_outer + datum.r_inner) / 2",
+      "as": "r_mid"
+    },
+    {
+      "calculate": "datum.pressure + '  ' + format(datum.percent, '.0f') + '%'",
+      "as": "label"
+    },
+    {
+      "calculate": "100",
+      "as": "full"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "arc",
+        "color": "#f3eacf",
+        "cornerRadius": 8
+      },
+      "encoding": {
+        "theta": {
+          "field": "full",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              100
+            ],
+            "range": [
+              0,
+              4.712
+            ]
+          },
+          "stack": null
+        },
+        "radius": {
+          "field": "r_outer",
+          "type": "quantitative",
+          "scale": null
+        },
+        "radius2": {
+          "field": "r_inner"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "arc",
+        "cornerRadius": 8
+      },
+      "encoding": {
+        "theta": {
+          "field": "percent",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              100
+            ],
+            "range": [
+              0,
+              4.712
+            ]
+          },
+          "stack": null
+        },
+        "radius": {
+          "field": "r_outer",
+          "type": "quantitative",
+          "scale": null
+        },
+        "radius2": {
+          "field": "r_inner"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.percent >= cut",
+            "value": "#9a6a12"
+          },
+          "value": "#aca18e"
+        },
+        "tooltip": [
+          {
+            "field": "pressure",
+            "title": "Pressure"
+          },
+          {
+            "field": "percent",
+            "title": "Respondents naming it (%)",
+            "format": ".1f"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "baseline": "middle",
+        "dx": -8,
+        "fontSize": 12,
+        "color": "#3c3831"
+      },
+      "encoding": {
+        "theta": {
+          "datum": 0,
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              100
+            ],
+            "range": [
+              0,
+              4.712
+            ]
+          }
+        },
+        "radius": {
+          "field": "r_mid",
+          "type": "quantitative",
+          "scale": null
+        },
+        "text": {
+          "field": "label"
+        },
+        "opacity": {
+          "condition": {
+            "test": "datum.percent >= cut",
+            "value": 1
+          },
+          "value": 0.45
+        }
+      }
+    },
+    {
+      "comment": "Annotation in the empty corner",
+      "data": {
+        "values": [
+          {}
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "baseline": "top",
+        "x": {
+          "expr": "width"
+        },
+        "y": 4,
+        "lineHeight": 16,
+        "fontSize": 12,
+        "fontStyle": "italic",
+        "color": "#3c3831",
+        "fontWeight": 600
+      },
+      "encoding": {
+        "text": {
+          "value": [
+            "Climate change ranks last",
+            "(43%), well behind culture"
+          ]
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif"
+  },
+  "params": [
+    {
+      "name": "cut",
+      "value": 55,
+      "bind": {
+        "input": "range",
+        "min": 40,
+        "max": 75,
+        "step": 5,
+        "name": "Highlight pressures named by at least (%): "
+      }
+    }
+  ]
+}

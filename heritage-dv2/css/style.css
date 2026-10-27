@@ -1,0 +1,1010 @@
+:root {
+    --bg: #faf5ee;
+    --surface: #ffffff;
+    --cream: #f3eacf;
+    --ink: #3c3831;
+    --ink-soft: #5b5850;
+    --line: #e6dfd2;
+
+    --accent: #9a6a12;
+    --green: #2f3a48;
+    --buff: #d9bf90;
+    --duck-egg: #9fb4c7;
+
+    --natural: #2f4b6e;
+    --historic: #8a8376;
+    --historic-text: #6b655a;
+    --indigenous: #9a6a12;
+
+    --font-heading: 'Fraunces', Georgia, serif;
+    --font-body: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;  /* sans serif for all reading text */
+    --font-ui: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+
+    --text-width: 1020px;
+    --wide-width: 1040px;
+    --gap: 24px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.65;
+    overflow-x: clip;
+}
+
+.container {
+    max-width: var(--wide-width);
+    margin: 0 auto;
+    padding: 0 var(--gap);
+}
+
+section > p,
+section > h2,
+.intro,
+.conclusion {
+    max-width: var(--text-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    line-height: 1.15;
+    margin: 0 0 12px;
+}
+
+h1 {
+    font-size: 3.6rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2.1rem;
+    font-weight: 600;
+}
+
+p {
+    margin: 0 0 20px;
+}
+
+a {
+    color: var(--accent);
+}
+
+/* Cultural notice: one slim line above the hero, left aligned with the hero text */
+.cultural-notice {
+    background-color: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    letter-spacing: .2px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 7px var(--hero-gutter);
+}
+
+.hero {
+    position: relative;
+    min-height: 82vh;
+    display: flex;
+    align-items: flex-end;
+    background-color: var(--green);
+    background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0) 35%, rgba(20, 18, 15, 0.75) 100%),
+        url('../images/hero.jpg');
+    background-size: cover;
+    background-position: center 100%;
+    color: #ffffff;
+    padding: 0 0 56px;
+}
+
+/* align hero text with main page content */
+.hero .container {
+    max-width: var(--wide-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--gap);
+}
+
+.hero h1 {
+    max-width: 760px;
+}
+
+.kicker {
+    margin: 0 0 16px;
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.subtitle {
+    font-size: 1.3rem;
+    line-height: 1.45;
+    max-width: 560px;
+}
+
+.hero-credit {
+    position: absolute;
+    right: 16px;
+    bottom: 10px;
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+section {
+    padding: 72px 0 24px;
+}
+
+.section-number {
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.section-number::before {
+    content: "Part ";
+}
+
+/* make story text more consistent */
+.intro,
+.conclusion {
+    max-width: var(--text-width);
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    text-align: left;
+    text-wrap: pretty;
+}
+
+/* improve paragraph spacing */
+section > .intro {
+    margin-bottom: 32px;
+}
+
+.number-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px 48px;
+    max-width: var(--text-width);
+    margin: 40px 0 48px;
+}
+
+.number-item {
+    display: flex;
+    flex-direction: column;
+    border-top: 2px solid var(--ink);
+    padding-top: 10px;
+}
+
+.number-item.highlight {
+    border-top-color: var(--accent);
+}
+
+.big-number {
+    font-family: var(--font-heading);
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+}
+
+.number-item.highlight .big-number {
+    color: var(--accent);
+}
+
+.number-label {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-top: 6px;
+}
+
+.chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin: 56px 0;
+}
+
+.chart-card {
+    min-width: 0;
+}
+
+.chart-card.full {
+    margin: 56px auto;
+}
+
+.chart-card h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.chart {
+    width: 100%;
+}
+
+.chart .vega-embed {
+    width: 100%;
+}
+
+.caption {
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: var(--text-width);
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+.chart-card.full h3,
+.chart-card.full .caption {
+    max-width: var(--text-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.vega-bind {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-top: 8px;
+}
+
+.vega-bind select {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: var(--surface);
+    color: var(--ink);
+}
+
+.vega-bind-name {
+    font-size: 0.9rem;
+}
+
+#radial_family_tree,
+#butterfly_land_sea,
+#heatmap_qld_sites,
+#marimekko_pressures,
+#funnel_management,
+#sankey_grants,
+#timeline_ningaloo,
+#spike_wh_threats,
+#map_bivariate_heritage,
+#waffle_protection,
+#radial_indigenous,
+#line_growth {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* centre fixed width charts inside their card */
+}
+
+.chart canvas,
+.chart svg {
+    display: block;
+}
+
+/* scroll reveal: items fade and rise into place, then the chart inside fades in a beat later */
+.reveal {
+    opacity: 0;
+    transform: translateY(48px) scale(0.98);
+    transition: opacity 0.9s cubic-bezier(.2, .7, .2, 1), transform 0.9s cubic-bezier(.2, .7, .2, 1);
+    transition-delay: var(--delay, 0s);
+}
+.chart-card.reveal .chart {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+}
+.chart-card.reveal.visible .chart { opacity: 1; transform: none; }
+
+.reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .chart-card.reveal .chart {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+footer {
+    background-color: var(--green);
+    color: var(--cream);
+    font-family: var(--font-ui);
+    padding: 48px 0;
+    margin-top: 72px;
+    font-size: 0.9rem;
+}
+
+footer h2 {
+    font-size: 1.4rem;
+    color: #ffffff;
+}
+
+footer a {
+    color: var(--buff);
+}
+
+.sources {
+    padding-left: 20px;
+    margin: 0 0 24px;
+}
+
+.sources li {
+    margin-bottom: 8px;
+}
+
+.meta {
+    color: var(--duck-egg);
+    border-top: 1px solid #3e4a59;
+    padding-top: 16px;
+}
+
+@media (max-width: 800px) {
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 1.7rem; }
+
+    .hero .container {
+        padding: 0 var(--gap);
+    }
+
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+
+    .number-panel {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.chart-source {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    color: var(--historic-text);
+    margin: 6px 0 0;
+}
+
+.chart-card.full .chart-source {
+    max-width: var(--text-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.natural-text,
+.historic-text,
+.indigenous-text {
+    font-weight: 600;
+    padding: 0 4px;
+    border-radius: 3px;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.natural-text    { background-color: var(--natural); }
+.historic-text   { background-color: var(--historic-text); }
+.indigenous-text { background-color: var(--indigenous); }
+
+/* Map 1 
+grid - place the map and text side by side 
+*/
+
+.scrolly {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 40px;
+    margin: 56px 0 0;
+}
+
+/* sticky - map stay visible when user scrolls thru the text*/
+
+.scrolly-graphic {
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 72px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.scrolly-graphic h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.scrolly-steps {
+    padding: 40vh 0;
+}
+
+.scrolly-step {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    opacity: 0.3;
+    transition: opacity 0.4s ease;
+}
+
+/* highlight the current active paragraph*/
+.scrolly-step.active {
+    opacity: 1;
+}
+
+.scrolly-step p {
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    padding: 20px 22px;
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.scrolly-caption {
+    margin: 16px auto 0;
+}
+
+@media (max-width: 800px) {
+    .scrolly {
+        display: block;
+    }
+
+    .scrolly-graphic {
+        top: 0;
+        height: auto;
+        background-color: var(--bg);
+        z-index: 1;
+    }
+
+    .scrolly-steps {
+        position: relative;
+        z-index: 2;
+        padding: 10vh 0 30vh;
+    }
+
+    .scrolly-step {
+        min-height: 60vh;
+    }
+}
+
+/* Smooth scrolling for the nav links */
+html { scroll-behavior: smooth; scroll-padding-top: 106px; }
+section[id] { scroll-margin-top: 106px; }
+@media (prefers-reduced-motion:reduce) { html {scroll-behavior:auto;} }
+
+/* Chapter bridges (quotes between Parts) and chapter stats */
+.chapter-bridge {display:flex;align-items:flex-start;gap:20px;margin:65px 0 0;padding:28px 0 10px;border-top:1px solid var(--line)}
+.chapter-bridge .bridge-mark{font-family:var(--font-heading);font-size:4rem;line-height:.95;color:var(--accent)}
+.chapter-bridge h3 {font-family:var(--font-heading);font-size:1.47rem;font-weight:600;max-width:760px}
+.chapter-bridge p{max-width:760px;margin:7px 0 0;font-size:1rem;color:var(--ink-soft)}
+.chapter-stat {display:flex;align-items:baseline;gap:13px;margin:8px 0 19px;font-family:var(--font-ui)}
+.chapter-stat span{font-family:var(--font-heading);font-size:1.6rem;font-weight:700;color:var(--accent);white-space:nowrap}
+.chapter-stat small{font-size:.78rem;color:var(--ink-soft)}
+@media(max-width:800px){.chapter-bridge{gap:10px;margin-top:38px}.chapter-bridge h3{font-size:1.22rem}.chapter-bridge .bridge-mark{font-size:2.9rem}.chapter-stat{align-items:start;flex-direction:column;gap:1px}}
+
+/* ===== Story nav: icon pills + reading progress ===== */
+.story-nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250, 245, 238, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+}
+.story-nav-inner {
+    max-width: var(--wide-width); margin: 0 auto;
+    padding: 10px var(--gap);
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+}
+.story-nav-label {
+    flex-shrink: 0; padding-right: 20px;
+    border-right: 1px solid var(--line);
+    font-family: var(--font-ui); font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 1.6px; line-height: 1.35; color: var(--accent);
+}
+.story-nav-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.story-nav-links a {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px 7px 10px;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: #fff;
+    font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+    color: var(--ink); text-decoration: none; white-space: nowrap;
+    transition: background .25s, color .25s, border-color .25s, transform .25s;
+}
+.nav-icon {
+    width: 18px; height: 18px; flex-shrink: 0;
+    fill: none; stroke: var(--accent); stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round;
+    transition: stroke .25s, transform .25s;
+}
+.nav-text { display: inline-flex; align-items: baseline; gap: 6px; }
+.nav-num { font-size: 0.66rem; font-weight: 700; color: var(--accent); letter-spacing: .5px; }
+.story-nav-links a:hover,
+.story-nav-links a:focus-visible { border-color: var(--buff); background: var(--cream); transform: translateY(-1px); }
+.story-nav-links a:hover .nav-icon { transform: scale(1.12); }
+/* the chapter you are reading fills with the accent colour */
+.story-nav-links a.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.story-nav-links a.active .nav-icon { stroke: #fff; }
+.story-nav-links a.active .nav-num { color: var(--cream); }
+/* thin progress line under the nav */
+.story-progress { height: 3px; background: transparent; }
+.story-progress span {
+    display: block; height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--buff), var(--accent));
+    transition: width .1s linear;
+}
+@media (max-width: 800px) {
+    .story-nav-inner { padding: 8px 16px; gap: 10px; }
+    .story-nav-label { display: none; }
+    .story-nav-links a { padding: 6px 9px; gap: 0; }
+    .nav-text { display: none; }   /* icons only on phones so the bar fits without scrolling */
+    .story-nav-links a.active .nav-text { display: inline-flex; margin-left: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .story-nav-links a, .nav-icon, .story-progress span { transition: none; }
+}
+
+/* ===== Centred layout: each Part sits in its own card ===== */
+main > section {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 1px 2px rgba(60, 56, 49, 0.04), 0 12px 32px rgba(60, 56, 49, 0.06);
+    padding: 56px 48px 44px;
+    margin: 56px 0;
+}
+/* coloured strip on top of each card so a new Part is obvious */
+main > section[id^="sec-"]::before {
+    content: "";
+    position: absolute; top: 0; left: 48px; right: 48px;
+    height: 4px; border-radius: 0 0 4px 4px;
+    background: linear-gradient(90deg, var(--buff), var(--accent));
+}
+/* Part label becomes a centred pill */
+main > section .section-number {
+    display: table;
+    margin: 0 auto 14px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.72rem;
+}
+main > section > h2,
+main > section .chapter-stat,
+.chart-card h3,
+.scrolly-graphic h3,
+.closing-line { text-align: center; }
+main > section .chapter-stat { justify-content: center; }
+main > section > .intro,
+main > section > .conclusion { max-width: 760px; }
+main .chart-card .caption,
+main .chart-card .chart-source,
+main .chart-card h3,
+.chart-card.full .caption,
+.chart-card.full .chart-source,
+.chart-card.full h3 { max-width: 780px; margin-left: auto; margin-right: auto; }
+main .chart-row .chart-card .caption,
+main .chart-row .chart-card .chart-source,
+main .chart-row .chart-card h3 { max-width: none; }
+.number-panel { margin-left: auto; margin-right: auto; }
+
+/* bridges between cards: centred quote */
+.chapter-bridge {
+    flex-direction: column; align-items: center; text-align: center;
+    gap: 0; border-top: 0; margin: 56px auto -16px; padding: 0 0 0;
+}
+.chapter-bridge h3, .chapter-bridge p { margin-left: auto; margin-right: auto; }
+.chapter-bridge .bridge-mark { line-height: .6; height: 34px; }
+
+/* single "What to notice" line, only on charts that need it */
+.notice {
+    max-width: 780px;
+    margin: 16px auto 0;
+    padding: 12px 18px;
+    border-left: 3px solid var(--accent);
+    background: rgba(217, 191, 144, 0.12);
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--ink);
+    text-align: left;
+}
+.notice span {
+    display: block;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 1.4px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 2px;
+}
+
+/* KPI row for Part 06 */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin: 32px 0 8px;
+}
+.kpi {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 20px 12px 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg);
+}
+.kpi-value {
+    font-family: var(--font-heading);
+    font-size: 2rem; font-weight: 700; line-height: 1.1;
+    color: var(--ink);
+}
+.kpi-label {
+    margin-top: 6px;
+    font-family: var(--font-ui);
+    font-size: 0.8rem; line-height: 1.35;
+    color: var(--ink-soft);
+}
+.kpi.accent { background: var(--accent); border-color: var(--accent); }
+.kpi.accent .kpi-value { color: #fff; }
+.kpi.accent .kpi-label { color: var(--cream); }
+
+@media (max-width: 900px) {
+    main > section { padding: 40px 18px 28px; border-radius: 12px; margin: 32px 0; }
+    main > section[id^="sec-"]::before { left: 18px; right: 18px; }
+    .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kpi:last-child { grid-column: 1 / -1; }
+}
+
+/* sliders use the accent colour */
+.vega-bind input[type="range"] { accent-color: var(--accent); vertical-align: middle; }
+
+/* ===== Walk to map (Part 02 per million map) ===== */
+.walk-bar {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: 6px; margin: 14px auto 10px;
+}
+.walk-label {
+    display: inline-flex; align-items: center; gap: 6px; margin-right: 6px;
+    font-family: var(--font-ui); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent);
+}
+.walk-label svg { width: 18px; height: 18px; fill: var(--accent); }
+.walk-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--bg); color: var(--ink); cursor: pointer;
+    font-family: var(--font-ui); font-size: 0.78rem; font-weight: 600;
+    transition: background .2s, color .2s, border-color .2s, transform .2s;
+}
+.walk-chip:hover, .walk-chip:focus-visible { border-color: var(--buff); transform: translateY(-1px); }
+.chip-rate {
+    padding: 1px 6px; border-radius: 999px; background: var(--cream);
+    font-size: 0.68rem; font-weight: 700; color: var(--accent);
+}
+.walk-chip.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+.walk-chip.active .chip-rate { background: var(--accent); color: #fff; }
+
+.walk-map { position: relative; }
+.walk-card {
+    position: absolute; top: 8px; right: 0; width: 210px;
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(6px);
+    box-shadow: 0 8px 24px rgba(60, 56, 49, 0.08);
+    font-family: var(--font-ui); pointer-events: none;
+    animation: cardIn .4s ease;
+}
+.walk-card-kicker { font-size: 0.64rem; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; color: var(--accent); }
+.walk-card-name { font-family: var(--font-heading); font-size: 1.05rem; line-height: 1.2; color: var(--ink); }
+.walk-card-big { font-family: var(--font-heading); font-size: 2rem; font-weight: 700; line-height: 1.1; color: var(--accent); }
+.walk-card-big small { display: block; margin-top: 2px; font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600; color: var(--ink-soft); }
+.walk-card-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 4px; background: var(--line); }
+.walk-card-bar .seg-h { background: var(--historic); }
+.walk-card-bar .seg-n { background: var(--natural); }
+.walk-card-bar .seg-i { background: var(--indigenous); }
+.walk-card-key { font-size: 0.74rem; line-height: 1.35; color: var(--ink-soft); }
+@keyframes cardIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (max-width: 800px) {
+    .walk-card { position: static; width: auto; margin-top: 8px; }
+    .walk-label { width: 100%; justify-content: center; }
+}
+
+/* =====================================================================
+   Design system: one type scale and one spacing scale for the whole page
+   ===================================================================== */
+:root {
+    --measure: 680px;        /* ~65 to 75 characters per line for reading text */
+    --section-gap: 64px;     /* space between Part cards */
+    --block-gap: 56px;       /* space between chart cards inside a Part */
+    --card-pad-x: 56px;
+}
+
+/* Type scale: Fraunces = headings only, Source Sans 3 = all reading text, labels and sources */
+.hero h1 { font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1.05; letter-spacing: -0.5px; }
+main > section > h2 { font-size: 2.2rem; line-height: 1.15; margin: 0 0 6px; }
+.chart-card h3,
+.scrolly-graphic h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;           /* ~24px */
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 auto 14px;
+}
+.chapter-bridge h3 { font-size: 1.45rem; }
+
+/* Reading text: same measure, size and line height everywhere */
+main > section > .intro,
+main > section > .conclusion,
+.chapter-bridge p { max-width: var(--measure); line-height: 1.65; }
+main .chart-card .caption,
+.chart-card.full .caption,
+.scrolly-caption {
+    font-family: var(--font-body);
+    font-size: 0.88rem;              /* ~17px */
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+    text-align: left;
+}
+main .chart-row .chart-card .caption { max-width: none; }
+.notice { max-width: var(--measure); }
+main .chart-card .chart-source,
+.chart-card.full .chart-source { max-width: var(--measure); font-size: 0.7rem; letter-spacing: .2px; }
+
+/* Spacing: one rhythm */
+main > section { margin: var(--section-gap) 0; padding-left: var(--card-pad-x); padding-right: var(--card-pad-x); }
+main > section[id^="sec-"]::before { left: var(--card-pad-x); right: var(--card-pad-x); }
+.chart-card.full, .chart-row, .kpi-row { margin-top: var(--block-gap); margin-bottom: 0; }
+.chart-row { gap: 40px; align-items: start; }
+.number-panel { margin-top: 40px; margin-bottom: 40px; }
+.conclusion { margin-top: var(--block-gap); }
+
+@media (max-width: 900px) {
+    :root { --card-pad-x: 18px; --section-gap: 32px; --block-gap: 40px; }
+    main > section > h2 { font-size: 1.7rem; }
+    .chart-row { grid-template-columns: 1fr; }
+}
+
+/* ===== Hero: bigger title, left aligned ===== */
+:root { --hero-gutter: clamp(20px, 5vw, 80px); }
+.hero .container {
+    max-width: 1180px;
+    margin: 0;
+    padding: 0 var(--hero-gutter);
+}
+.hero .kicker { font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 18px; }
+.hero h1 {
+    font-size: clamp(3rem, 7.5vw, 6.2rem);
+    line-height: 1.0;
+    letter-spacing: -1px;
+    max-width: 980px;
+    margin: 0 0 22px;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+}
+.hero .subtitle {
+    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    line-height: 1.45;
+    max-width: 720px;
+    margin: 0;
+}
+.hero { padding-bottom: 72px; }
+@media (max-width: 800px) {
+    .cultural-notice { white-space: normal; }   /* allow wrapping on phones */
+}
+.hero .container { max-width: 1400px; }
+.hero h1 { max-width: none; }
+.story-nav-inner { max-width: 1240px; }
+@media (max-width: 800px) {
+    .hero { padding-bottom: 64px; }
+    .hero h1 { letter-spacing: -0.5px; }
+}
+
+/* ===== Introduction (replaces the 3 column reader guide) ===== */
+.story-intro {
+    max-width: var(--measure);
+    margin: 64px auto 0;
+    text-align: left;
+}
+.story-intro-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    line-height: 1.15;
+    margin: 0 0 18px;
+    text-align: center;
+}
+.story-intro-title::after {          /* short gold rule under the question */
+    content: "";
+    display: block;
+    width: 64px; height: 3px;
+    margin: 16px auto 0;
+    border-radius: 2px;
+    background: var(--accent);
+}
+.story-intro p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 0 0 18px;
+}
+.story-intro p:first-of-type::first-letter {   /* drop cap to open the story */
+    float: left;
+    font-family: var(--font-heading);
+    font-size: 3.4rem;
+    line-height: 0.9;
+    padding: 6px 10px 0 0;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* nav label: one line, bigger */
+.story-nav-label {
+    white-space: nowrap;
+    font-size: 0.8rem;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+.hero h1 { font-size: clamp(2.8rem, 6.2vw, 5.6rem); }
+
+/* Print / save as PDF: show everything (no fade in), keep the hero photo */
+@media print {
+    .reveal, .chart-card.reveal .chart { opacity: 1 !important; transform: none !important; }
+    .story-nav { position: static; }
+    .scrolly-graphic { position: static; height: auto; }
+    .scrolly-steps { padding: 0; }
+    .scrolly-step { min-height: 0; opacity: 1; margin: 12px 0; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* ===== Reading text: sans serif, about 12 words per line ===== */
+:root { --measure: 600px; }
+html, body { font-size: 18px; line-height: 1.6; }
+main > section > .intro,
+main > section > .conclusion,
+.story-intro p { font-size: 1.08rem; line-height: 1.65; }
+.hero .subtitle { font-family: var(--font-body); max-width: 640px; }
+main .chart-card .caption,
+.chart-card.full .caption,
+.scrolly-caption { font-size: 0.92rem; line-height: 1.6; }
+.scrolly-step p { font-family: var(--font-body); font-size: 1rem; }
+.chapter-bridge p { font-family: var(--font-body); }
+
+/* ===== Sight lines: hero text and notice line up with the left edge of the Part cards ===== */
+.cultural-notice { padding-left: max(var(--gap), calc((100% - var(--wide-width)) / 2 + var(--gap))); padding-right: var(--gap); }
+.hero .container { width: 100%; max-width: var(--wide-width); margin: 0 auto; padding: 0 var(--gap); }
+.hero h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); }   /* still one line inside the card width */
+/* two charts side by side: smaller gap, columns cannot grow past half */
+.chart-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+@media (max-width: 900px) { .chart-row { grid-template-columns: 1fr; } }
+
+/* ===== Nav bar lines up with the Part cards: title on the left edge, chapters on the right edge ===== */
+.story-nav-inner {
+    max-width: var(--wide-width);
+    margin: 0 auto;
+    padding: 12px var(--gap);
+    justify-content: space-between;
+    gap: 16px;
+}
+.story-nav-label {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    text-transform: none;
+    color: var(--ink);
+    border-right: 0;
+    padding-right: 0;
+    line-height: 1;
+}
+.story-nav-label::after {            /* small gold dot after the title */
+    content: "";
+    display: inline-block;
+    width: 7px; height: 7px;
+    margin-left: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+.story-nav-links { flex-wrap: nowrap; gap: 4px; }
+.story-nav-links a { padding: 6px 10px 6px 8px; gap: 6px; font-size: 0.74rem; }
+.nav-icon { width: 16px; height: 16px; }
+@media (max-width: 1100px) {
+    .story-nav-label { display: none; }
+    .story-nav-inner { justify-content: center; }
+}
+.story-nav-label { font-size: 1.25rem; }
+.story-nav-links { gap: 3px; }
+.story-nav-links a { padding: 5px 8px 5px 7px; gap: 5px; }
+
+/* ===== Layout notes: one column grid, about 60 characters per line ===== */
+/* captions follow the same reading measure as the story text */
+main .chart-card .caption,
+.chart-card.full .caption,
+.chart-card.full .chart-source,
+.notice { max-width: 540px; }
+/* every multi column row uses the same 24px gutter, so column edges line up down the page */
+.number-panel { gap: 28px 24px; }
+.kpi-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }   /* 4 columns = the 2 column grid split in half */
+@media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kpi:last-child { grid-column: auto; }
+}
+/* captions: slightly larger and narrower = about 60 characters per line */
+main .chart-card .caption,
+.chart-card.full .caption,
+.scrolly-caption { font-size: 1rem; }
+main .chart-card .caption,
+.chart-card.full .caption,
+.chart-card.full .chart-source,
+.notice { max-width: 500px; }
+main .chart-row .chart-card .caption { font-size: 0.95rem; }
+
+/* dot map caption now sits under the map, inside the sticky panel */
+.scrolly-graphic .scrolly-caption { margin: 10px 0 4px; max-width: none; font-size: 0.92rem; }
+.scrolly-graphic h3 { margin: 0 0 14px; text-align: center; }
+/* closing line stays the big gold statement */
+main > section > .conclusion.closing-line {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--accent);
+    margin-top: 32px;
+}
+
+/* ===== Full width text: paragraphs run edge to edge inside the card,
+         on the same sight lines as the KPI tiles, number panel and charts ===== */
+main > section > .intro,
+main > section > .conclusion,
+main .chart-card .caption,
+main .chart-card .chart-source,
+.chart-card.full .caption,
+.chart-card.full .chart-source,
+.chart-card.full h3,
+main .chart-card h3,
+.notice,
+.scrolly-graphic .scrolly-caption {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+}
+main > section > .intro,
+main > section > .conclusion,
+main .chart-card .caption,
+.notice,
+.story-intro p,
+.chapter-bridge p {
+    text-align: justify;          /* straight left and right edges */
+    hyphens: auto;
+    -webkit-hyphens: auto;
+}
+main > section > .intro,
+main > section > .conclusion { font-size: 1.15rem; line-height: 1.7; }
+main .chart-card .caption,
+.chart-card.full .caption { font-size: 1rem; line-height: 1.65; }
+/* intro and bridges outside the cards span the same width as the card content */
+.story-intro { max-width: none; margin: 64px 0 0; padding: 0 var(--card-pad-x); }
+.story-intro p { font-size: 1.15rem; }
+.chapter-bridge { padding: 0 var(--card-pad-x); }
+.chapter-bridge h3, .chapter-bridge p { max-width: none; }

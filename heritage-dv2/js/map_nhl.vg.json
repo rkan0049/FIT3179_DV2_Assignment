@@ -1,0 +1,311 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Scrollytelling point map of National Heritage places. The step parameter is set by main.js as the reader scrolls: 1 = all of Australia, 2 = zoom to the south-east, 3 = zoom to the tropical north, 4 = all of Australia with only Indigenous places highlighted.",
+  "width": "container",
+  "height": 560,
+  "background": null,
+  "projection": {
+    "type": "conicEqualArea",
+    "parallels": [
+      -18,
+      -36
+    ],
+    "rotate": [
+      -132,
+      0
+    ],
+    "center": {
+      "expr": "[focus_lon - 132, focus_lat]"
+    },
+    "scale": {
+      "expr": "min(width, height * 1.25) * 1.3 * zoom"
+    },
+    "translate": {
+      "expr": "[width / 2, height / 2]"
+    },
+    "clipExtent": {
+      "expr": "[[0, 0], [width, height]]"
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/aus_states.topojson",
+        "format": {
+          "type": "topojson",
+          "feature": "states"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#f3eacf",
+        "stroke": "#ffffff",
+        "strokeWidth": 1
+      }
+    },
+    {
+      "data": {
+        "sequence": {
+          "start": 112,
+          "stop": 155,
+          "step": 1,
+          "as": "lon"
+        }
+      },
+      "mark": {
+        "type": "line",
+        "strokeDash": [
+          4,
+          4
+        ],
+        "color": "#5b5850",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "opacity": {
+          "value": {
+            "expr": "step == 3 ? 0.8 : 0"
+          }
+        },
+        "order": {
+          "field": "lon",
+          "type": "quantitative"
+        }
+      },
+      "transform": [
+        {
+          "calculate": "-23.436",
+          "as": "lat"
+        }
+      ]
+    },
+    {
+      "data": {
+        "url": "data/nhl_places.csv"
+      },
+      "transform": [
+        {
+          "filter": "datum.state != 'EXT' && datum.lat > -45"
+        }
+      ],
+      "params": [
+        {
+          "name": "type_select",
+          "select": {
+            "type": "point",
+            "fields": [
+              "class"
+            ]
+          },
+          "bind": "legend"
+        }
+      ],
+      "mark": {
+        "type": "circle",
+        "stroke": "#ffffff",
+        "strokeWidth": 0.8,
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "class",
+          "type": "nominal",
+          "title": "Heritage type",
+          "scale": {
+            "domain": [
+              "Historic",
+              "Natural",
+              "Indigenous"
+            ],
+            "range": [
+              "#8a8376",
+              "#2f4b6e",
+              "#9a6a12"
+            ]
+          },
+          "legend": {
+            "orient": "top-left",
+            "symbolStrokeWidth": 0
+          }
+        },
+        "opacity": {
+          "condition": [
+            {
+              "test": "step == 4 && datum.class != 'Indigenous'",
+              "value": 0.08
+            },
+            {
+              "param": "type_select",
+              "value": 0.9
+            }
+          ],
+          "value": 0.12
+        },
+        "href": {
+          "field": "url"
+        },
+        "tooltip": [
+          {
+            "field": "name",
+            "title": "Place"
+          },
+          {
+            "field": "class",
+            "title": "Type"
+          },
+          {
+            "field": "state",
+            "title": "State"
+          },
+          {
+            "field": "year",
+            "title": "Year listed"
+          },
+          {
+            "field": "area_ha",
+            "title": "Area (ha)",
+            "format": ",.0f"
+          }
+        ],
+        "size": {
+          "value": {
+            "expr": "step == 2 ? 120 : step == 3 ? 110 : 70"
+          }
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "label": "Sydney",
+            "lon": 151.21,
+            "lat": -33.87,
+            "show": 2
+          },
+          {
+            "label": "Melbourne",
+            "lon": 144.96,
+            "lat": -37.81,
+            "show": 2
+          },
+          {
+            "label": "Hobart",
+            "lon": 147.33,
+            "lat": -42.88,
+            "show": 2
+          },
+          {
+            "label": "Adelaide",
+            "lon": 138.6,
+            "lat": -34.93,
+            "show": 2
+          },
+          {
+            "label": "Canberra",
+            "lon": 149.13,
+            "lat": -35.28,
+            "show": 2
+          },
+          {
+            "label": "Darwin",
+            "lon": 130.84,
+            "lat": -12.46,
+            "show": 3
+          },
+          {
+            "label": "Cairns",
+            "lon": 145.77,
+            "lat": -16.92,
+            "show": 3
+          },
+          {
+            "label": "Broome",
+            "lon": 122.24,
+            "lat": -17.96,
+            "show": 3
+          },
+          {
+            "label": "Tropic of Capricorn",
+            "lon": 121,
+            "lat": -23.436,
+            "show": 3
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "dx": 8,
+        "dy": -8,
+        "align": "left",
+        "fontSize": 13,
+        "fontWeight": 600,
+        "color": "#3c3831"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label"
+        },
+        "opacity": {
+          "condition": {
+            "test": "datum.show == step",
+            "value": 1
+          },
+          "value": 0
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "legend": {
+      "labelFontSize": 13,
+      "titleFontSize": 13
+    }
+  },
+  "params": [
+    {
+      "name": "step",
+      "value": 1
+    },
+    {
+      "name": "zoom",
+      "expr": "step == 2 ? 2.6 : step == 3 ? 1.3 : 1"
+    },
+    {
+      "name": "focus_lon",
+      "expr": "step == 2 ? 146 : step == 3 ? 132 : 134"
+    },
+    {
+      "name": "focus_lat",
+      "expr": "step == 2 ? -36 : step == 3 ? -17 : -28"
+    }
+  ]
+}

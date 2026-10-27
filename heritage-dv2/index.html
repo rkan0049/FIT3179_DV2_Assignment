@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Head: page settings, fonts, stylesheet and chart libraries -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Australian Heritage Sites: Listed, But Is It Safe?</title>
+<!-- Google Fonts: Fraunces (headings only), Source Sans 3 (all reading text, labels and charts) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&amp;family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- My stylesheet -->
+<link href="css/style.css" rel="stylesheet"/>
+<!-- Chart libraries: Vega, Vega-Lite, Vega-Embed -->
+<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+<!-- Cultural notice for Aboriginal and Torres Strait Islander readers -->
+<div class="cultural-notice">Aboriginal and Torres Strait Islander readers are advised that this page discusses Indigenous cultural heritage, including sites that have been damaged or destroyed.</div>
+<!-- Hero: Uluru photo with title -->
+<header class="hero">
+<div class="container">
+<!-- Kicker: small label above the title -->
+<p class="kicker">A data story</p>
+<h1>Australian Heritage Sites</h1>
+<p class="subtitle">
+                Australia protects hundreds of thousands of heritage places.
+                This page explores what is on the list, where it is, and whether being listed is enough to keep it safe.
+            </p>
+</div>
+<!-- Hero photo credit -->
+<p class="hero-credit">Uluru, Uluru-Kata Tjuta National Park. Photo: Journey Beyond Rail</p>
+</header>
+<!-- Sticky section nav: icon + chapter number, active chapter fills in as you scroll, thin bar shows reading progress -->
+<nav aria-label="Jump to story section" class="story-nav">
+  <div class="story-nav-inner">
+    <span class="story-nav-label">Journey through Australia</span>
+    <div class="story-nav-links">
+    <a href="#sec-what"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg><span class="nav-text"><span class="nav-num">01</span>The list</span></a>
+    <a href="#sec-where"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg><span class="nav-text"><span class="nav-num">02</span>The map</span></a>
+    <a href="#sec-growth"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 4 4L21 7"/><path d="M15 7h6v6"/></svg><span class="nav-text"><span class="nav-num">03</span>Growth</span></a>
+    <a href="#sec-safe"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="M8.8 12l2.2 2.2 4.2-4.4"/></svg><span class="nav-text"><span class="nav-num">04</span>Protection</span></a>
+    <a href="#sec-threats"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5L2.8 19.5h18.4z"/><path d="M12 9.5v4.5"/><circle cx="12" cy="16.8" r=".6"/></svg><span class="nav-text"><span class="nav-num">05</span>Threats</span></a>
+    <a href="#sec-conservation"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.2c-.5-1-1.6-1.6-2.8-1.6-1.5 0-2.7.9-2.7 2.1 0 2.8 5.6 1.4 5.6 4.3 0 1.2-1.2 2.1-2.9 2.1-1.3 0-2.4-.6-2.9-1.6M12 6v1.6M12 16.4V18"/></svg><span class="nav-text"><span class="nav-num">06</span>Funding</span></a>
+    </div>
+  </div>
+  <div class="story-progress" aria-hidden="true"><span id="story-progress-bar"></span></div>
+</nav>
+<!-- Main content -->
+<main class="container"><!-- Introduction: the question and how to read the page -->
+<div class="story-intro">
+<h2 class="story-intro-title">Listed, but is it safe?</h2>
+<p>Australia records and recognises remarkable places, from ancient rock shelters to convict prisons and coral reefs. But does being recognised mean being protected? This story follows that question through six chapters: what is on the list, where it is, how it has grown, whether it is safe, what threatens it, and who pays to look after it.</p>
+<p>Listing counts, survey answers and funding totals each measure something different, so every chart explains what its numbers can and cannot tell us. Hover over any chart for details, or use the menu above to jump to a chapter.</p>
+</div>
+<!-- ===== Part 01: What is on the list? ===== -->
+<section aria-labelledby="heading-sec-what" id="sec-what">
+<p class="section-number">01</p>
+<h2 id="heading-sec-what">What is on the list?</h2><div class="chapter-stat"><span>126</span><small>places on the National Heritage List</small></div>
+<p class="intro">
+                The National Heritage List started in 2004. It is reserved for places with
+                “outstanding heritage value to the nation”, and every place is listed as one of three types:
+                <!-- Coloured words = colour legend used in every chart -->
+<span class="natural-text">natural</span> (landscapes, reefs, fossils and wildlife),
+                <span class="historic-text">historic</span> (buildings, sites and events that shaped the nation) or
+                <span class="indigenous-text">Indigenous</span> (places important to Aboriginal and Torres Strait Islander peoples).
+            </p>
+<!-- Part 01 | Number panel (not a chart) -->
+<div class="number-panel">
+<div class="number-item">
+<span class="big-number">232,000</span>
+<span class="number-label">Indigenous sites recorded</span>
+</div>
+<div class="number-item">
+<span class="big-number">15,000</span>
+<span class="number-label">Historic places on state registers</span>
+</div>
+<div class="number-item">
+<span class="big-number">8,800</span>
+<span class="number-label">Underwater sites</span>
+</div>
+<div class="number-item">
+<span class="big-number">389</span>
+<span class="number-label">Commonwealth places</span>
+</div>
+<div class="number-item">
+<span class="big-number">126</span>
+<span class="number-label">National Heritage places</span>
+</div>
+<div class="number-item highlight">
+<span class="big-number">21</span>
+<span class="number-label">World Heritage properties</span>
+</div>
+</div>
+<p class="intro">Heritage in Australia works like a pyramid. At the bottom are hundreds of thousands of sites recorded by the states. Near the top are the 126 National Heritage places, which the Australian Government is responsible for, and above them the 21 World Heritage properties. This page focuses on the National Heritage List: their national significance makes them an important test of whether recognition leads to meaningful protection.</p>
+<!-- Part 01 | Idiom 1: Radial family tree (radial_family_tree.vg.json) -->
+<div class="chart-card full">
+<h3>The National Heritage family tree</h3>
+<div class="chart" id="radial_family_tree"></div>
+<p class="caption">The List branches into its three heritage types, then into states and territories, then into all 126 places. More than half are historic places, and only 20 are listed for their Indigenous values, even though Aboriginal and Torres Strait Islander cultures go back more than 65,000 years. Hover over a branch to highlight its heritage type, and click a place to open its official page.</p>
+<p class="notice"><span>What to notice</span>The Indigenous branch is the thinnest: 20 of 126 places, for cultures more than 65,000 years old.</p>
+<p class="chart-source">Source: DCCEEW, National Heritage List Spatial Database</p>
+</div>
+</section>
+<!-- ===== Part 02: Where is it? ===== -->
+<aside aria-label="Story transition" class="chapter-bridge"><span class="bridge-mark">“</span><div><h3>Recognition is not evenly spread.</h3><p>Knowing how many places make the list is only the beginning. The next question is where those places are, and which regions dominate the national picture.</p></div></aside><section aria-labelledby="heading-sec-where" id="sec-where">
+<p class="section-number">02</p>
+<h2 id="heading-sec-where">Where is it?</h2><div class="chapter-stat"><span>119</span><small>National Heritage places shown on the map of the mainland and Tasmania</small></div>
+<p class="intro">
+                National Heritage places are not spread evenly. Most sit in the south-east,
+                while some jurisdictions have only a handful of listings. Hover for counts,
+                then click a state to compare it with the rest.
+            </p>
+<!-- Part 02 | Idiom 2: Scrollytelling dot map, Map 1 (map_nhl.vg.json) -->
+<div class="scrolly">
+<div class="scrolly-graphic">
+<h3>Every National Heritage place in Australia</h3>
+<div class="chart" id="map_nhl"></div>
+<p class="caption scrolly-caption">Hover over a dot for details, click it to open its official page, or click a legend item to highlight one heritage type.</p>
+<p class="chart-source">Source: DCCEEW, National Heritage List Spatial Database</p>
+</div>
+<div class="scrolly-steps">
+<!-- Step 1: all of Australia -->
+<div class="scrolly-step" data-step="1">
+<p>Each dot is a National Heritage place. This map shows 119 of the 126. The other seven are in external territories or on Macquarie Island.</p>
+</div>
+<!-- Step 2: zoom to south east -->
+<div class="scrolly-step" data-step="2">
+<p>Zoom in on the south-east and the map fills up. <strong>73 places</strong>, six in every ten, sit in this corner of the country, and 56 of them are <span class="historic-text">historic</span>: convict sites, colonial buildings and places tied to early settlement around Sydney, Melbourne and Hobart.</p>
+</div>
+<!-- Step 3: zoom to tropical north -->
+<div class="scrolly-step" data-step="3">
+<p>Now look north of the Tropic of Capricorn. Across the whole tropical north there are only <strong>14 places</strong>. Nine are <span class="natural-text">natural</span>, like Kakadu and the Great Barrier Reef, and five are <span class="indigenous-text">Indigenous</span>. Not one is historic.</p>
+</div>
+<!-- Step 4: highlight Indigenous places -->
+<div class="scrolly-step" data-step="4">
+<p>Only <strong>20 places</strong> are listed for their <span class="indigenous-text">Indigenous</span> values, spread thinly across every state, even though Aboriginal and Torres Strait Islander peoples have cared for this whole continent for more than 65,000 years.</p>
+</div>
+</div>
+</div>
+<!-- Part 02 | Idiom 3: Choropleth map, Map 2 (map_state.vg.json) -->
+<div class="chart-card full">
+<h3>National Heritage places by state and territory</h3>
+<!-- Walk to: buttons zoom the map into one state (main.js animates the zoom) -->
+<div class="walk-bar" role="group" aria-label="Walk to a state">
+    <span class="walk-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>Walk to</span>
+    <button type="button" class="walk-chip active" data-state="ALL" aria-pressed="true"><span class="chip-name">Australia</span></button>
+    <button type="button" class="walk-chip" data-state="NSW" aria-pressed="false"><span class="chip-name">NSW</span><span class="chip-rate">3.5</span></button>
+    <button type="button" class="walk-chip" data-state="VIC" aria-pressed="false"><span class="chip-name">VIC</span><span class="chip-rate">4.1</span></button>
+    <button type="button" class="walk-chip" data-state="QLD" aria-pressed="false"><span class="chip-name">QLD</span><span class="chip-rate">2.1</span></button>
+    <button type="button" class="walk-chip" data-state="WA" aria-pressed="false"><span class="chip-name">WA</span><span class="chip-rate">5.2</span></button>
+    <button type="button" class="walk-chip" data-state="SA" aria-pressed="false"><span class="chip-name">SA</span><span class="chip-rate">5.2</span></button>
+    <button type="button" class="walk-chip" data-state="TAS" aria-pressed="false"><span class="chip-name">TAS</span><span class="chip-rate">22.4</span></button>
+    <button type="button" class="walk-chip" data-state="NT" aria-pressed="false"><span class="chip-name">NT</span><span class="chip-rate">22.3</span></button>
+    <button type="button" class="walk-chip" data-state="ACT" aria-pressed="false"><span class="chip-name">ACT</span><span class="chip-rate">8.2</span></button>
+</div>
+<div class="walk-map">
+    <div class="chart" id="map_state"></div>
+    <!-- Info card: updates with the state you walk to -->
+    <div class="walk-card" id="walk-card" aria-live="polite"></div>
+</div>
+<p class="caption">New South Wales and Victoria hold the most listings, 59 of 126 between them. But per person the picture flips: Tasmania and the Northern Territory have about 22 places per million residents, while Queensland has only 2. The map shows places per million people so that big or crowded states do not look more important just because of their size. Use Walk to, or click a state, to zoom in and see each of its places as a dot (the small number on each button is places per million). Six places in external territories are not shown, so this map counts 120 places. The dot map above shows 119 because it also leaves out Macquarie Island, which is counted in Tasmania here.</p>
+<p class="notice"><span>What to notice</span>Why two maps? The dot map shows where places are. This one asks how common listings are per person, and the order flips: Tasmania and the NT lead, while NSW and Victoria, with the most places, sit near the bottom.</p>
+<p class="chart-source">Source: DCCEEW, National Heritage List Spatial Database; ABS, National, state and territory population, March 2026</p>
+</div>
+</section>
+<!-- ===== Part 03: How has protection expanded? ===== -->
+<aside aria-label="Story transition" class="chapter-bridge"><span class="bridge-mark">“</span><div><h3>A map tells us where. Time tells us when.</h3><p>The distribution is uneven today, but was it built gradually? Listing dates and state-register additions show how recognition has expanded, and where the pace differs.</p></div></aside><section aria-labelledby="heading-sec-growth" id="sec-growth">
+<p class="section-number">03</p>
+<h2 id="heading-sec-growth">How has protection expanded?</h2><div class="chapter-stat"><span>75</span><small>places listed within the first four years</small></div>
+<p class="intro">Protection grows in three ways: new places join the National Heritage List, states add places to their own registers, and new sites are recorded on land and underwater. But is it growing fast enough, and evenly?</p>
+<!-- Two charts side by side -->
+<div class="chart-row">
+<!-- Part 03 | Idiom 4: Overview + detail bar chart (line_growth.vg.json) -->
+<div class="chart-card">
+<h3>National Heritage listings over time</h3>
+<div class="chart" id="line_growth"></div>
+<p class="caption">75 of the 126 places (60%) were listed in the first four years, including 16 World Heritage places added on a single day in 2007. Since 2008, only about three places have been added each year. Drag across the lower chart to zoom in.</p>
+<p class="chart-source">Source: DCCEEW, National Heritage List Spatial Database</p>
+</div>
+<!-- Part 03 | Idiom 5: Proportional symbol map, Map 3 (chart_state_added.vg.json) -->
+<div class="chart-card">
+<h3>Historic places added to state registers each year</h3>
+<div class="chart" id="chart_state_added"></div>
+<p class="caption">Over five years (2015–16 to 2019–20), states added 402 historic places to their registers, but the effort is uneven: Queensland added 90, while Tasmania added only 6. Circle area shows the number of places. Use the dropdown to see each financial year.</p>
+<p class="chart-source">Source: Australia State of the Environment 2021, heritage data</p>
+</div>
+</div>
+<!-- Part 03 | Idiom 6: Butterfly chart (butterfly_land_sea.vg.json) -->
+<div class="chart-card full">
+<h3>On land or underwater? Heritage added to registers, 2016–17 to 2019–20</h3>
+<div class="chart" id="butterfly_land_sea"></div>
+<p class="caption">This chart covers a shorter window, the four years from 2016–17 to 2019–20, because no underwater data was reported for 2015–16. In those four years, 428 underwater sites were added, compared with 291 historic places on land. New South Wales alone added 224 underwater sites, more than half the national total, while Western Australia added none despite its long coastline. The ACT has no coastline, and the Australian Government manages underwater sites in Commonwealth waters rather than a historic places register.</p>
+<p class="chart-source">Source: Australia State of the Environment 2021, heritage data</p>
+</div>
+<!-- Part 03 | Idiom 7: Heatmap with totals (heatmap_qld_sites.vg.json) -->
+<div class="chart-card full">
+<h3>What gets recorded? Indigenous heritage sites added to Queensland’s database, 2012–2020</h3>
+<div class="chart" id="heatmap_qld_sites"></div>
+<p class="caption">Queensland recorded 15,164 new Aboriginal and Torres Strait Islander heritage sites in nine years, and three in four are artefact scatters (stone tools and flakes left on the ground). Pick a region to see how recording differs across the state. Queensland only. Darker cells mean more sites recorded that year. The colour scale is compressed so that smaller numbers are still visible.</p>
+<p class="chart-source">Source: Queensland State of the Environment 2020, cultural heritage site locations</p>
+</div>
+</section>
+<!-- ===== Part 04: Are these places actually safe? ===== -->
+<aside aria-label="Story transition" class="chapter-bridge"><span class="bridge-mark">“</span><div><h3>More listings do not automatically mean better protection.</h3><p>Counting newly recognised places cannot tell us whether they are properly managed. To test the promise of listing, we turn to laws, stakeholder experiences and management plans.</p></div></aside><section aria-labelledby="heading-sec-safe" id="sec-safe">
+<p class="section-number">04</p>
+<h2 id="heading-sec-safe">Are these places actually safe?</h2><div class="chapter-stat"><span>73 of 120</span><small>places with plans rated effective in the 2023 review</small></div>
+<p class="intro">A listing is a promise, not a guarantee. It only helps if there are laws that work, a plan to manage the place, and people with the power to look after it. Here is what the people closest to these places say.</p>
+<!-- Two charts side by side -->
+<div class="chart-row">
+<!-- Part 04 | Idiom 8: Waffle chart (waffle_protection.vg.json) -->
+<div class="chart-card">
+<h3>Do Indigenous stakeholders think heritage is protected by law?</h3>
+<div class="chart" id="waffle_protection"></div>
+<p class="caption">Each square is one in every 100 respondents. Almost all of them said Australian laws do not adequately protect Indigenous heritage. This was a survey of Indigenous stakeholders for the 2021 State of the Environment report, not of all Indigenous Australians.</p>
+<p class="chart-source">Source: Australia State of the Environment 2021, Indigenous stakeholder survey</p>
+</div>
+<!-- Part 04 | Idiom 9: Radial bar chart (radial_indigenous.vg.json) -->
+<div class="chart-card">
+<h3>What Indigenous stakeholders see as the biggest pressures</h3>
+<div class="chart" id="radial_indigenous"></div>
+<p class="caption">Protecting cultural sites (72%) and protecting Indigenous knowledge (69%) top the list, well ahead of climate change (43%). Respondents could choose more than one option, so the totals add up to more than 100%.</p>
+<p class="chart-source">Source: Australia State of the Environment 2021, Indigenous stakeholder survey</p>
+</div>
+</div>
+<!-- Part 04 | Idiom 10: Bivariate choropleth, Map 5 (map_bivariate_heritage.vg.json) -->
+<div class="chart-card full">
+<h3>Does national recognition match what states are still adding?</h3>
+<div class="chart" id="map_bivariate_heritage"></div>
+<p class="caption">Each state is coloured by two measures at once, both per million residents: National Heritage places (June 2020) and historic places added to its state register from 2016–17 to 2019–20. Each measure is split into low and high at the middle value of the eight states and territories (5.5 national places and 12.3 new additions per million). Western Australia, the Northern Territory and the ACT are high on both, while New South Wales, Victoria and South Australia are low on both. Hover over a state for its figures, or click a legend square to highlight its states.</p>
+<p class="notice"><span>What to notice</span>This shows listing activity, not how well places are protected. The two lists also cover different things, so a state can be low on one and still look after its heritage well.</p>
+<p class="chart-source">Sources: DCCEEW, National Heritage List (listings to June 2020); Australia State of the Environment 2021, historic places added to registers; ABS population, June 2020</p>
+</div>
+<!-- Part 04 | Idiom 11: Funnel chart (funnel_management.vg.json) -->
+<div class="chart-card full">
+<h3>Listed, but is anyone managing it? Management plans for the 120 National Heritage places, 2023</h3>
+<div class="chart" id="funnel_management"></div>
+<p class="caption">Only 73 of the 120 places (61%) have a management plan that their own managers rate as effective. For 35 places, there is either no plan or no answer at all. Each bar shows how many places are left at that step, and the gold notes show how many drop out. Effectiveness is self-reported by place managers. The department later confirmed that 6 of the 17 places without a plan have one in place or in preparation. “Effectiveness not rated” is calculated from the report text (85 plans minus 77 ratings).</p>
+<p class="chart-source">Source: DCCEEW (2023), Review of the National Heritage List and Commonwealth Heritage List, Appendix F</p>
+</div>
+
+</section>
+<!-- ===== Part 05: What is threatening them? ===== -->
+<aside aria-label="Story transition" class="chapter-bridge"><span class="bridge-mark">“</span><div><h3>Protection on paper meets pressures on the ground.</h3><p>Even when a place has legal recognition and a management plan, climate, development and inadequate resourcing can still threaten it. The next evidence comes from heritage experts.</p></div></aside><section aria-labelledby="heading-sec-threats" id="sec-threats">
+<p class="section-number">05</p>
+<h2 id="heading-sec-threats">What is threatening them?</h2><div class="chapter-stat"><span>41%</span><small>of natural-heritage pressure mentions attributed to climate change</small></div>
+<p class="intro">For the 2021 State of the Environment report, heritage experts were asked which pressures have the greatest impact on each type of heritage. Their answers fall into five groups: climate change, industry, population, governance and other. Then we check what UNESCO itself has flagged for Australia&rsquo;s World Heritage places.</p>
+<!-- Part 05 | Idiom 12: Marimekko chart (marimekko_pressures.vg.json) -->
+<div class="chart-card full">
+<h3>What do experts say is hurting heritage most?</h3>
+<div class="chart" id="marimekko_pressures"></div>
+<p class="caption">For natural heritage, climate change is the biggest worry (41%). But for geoheritage, Indigenous and historic heritage, the top group is governance: too little money and weak legal protection. The single most named pressure overall is inadequate resourcing. Column width shows how many mentions each heritage type received. Click any tile to see the pressures behind it.</p>
+<p class="notice"><span>What to notice</span>Climate change leads only for natural heritage. For every other type, the bigger problem is governance: not enough money and weak laws.</p>
+<p class="chart-source">Source: McConnell (2021a), heritage expert survey, Australia State of the Environment 2021</p>
+</div>
+<!-- Part 05 | Idiom 13: Spike map + threat timeline, Map 4 (spike_wh_threats.vg.json) -->
+<div class="chart-card full">
+<h3>Even World Heritage is on watch: UNESCO reports on Australian properties, 1983–2026</h3>
+<div class="chart" id="spike_wh_threats"></div>
+<p class="caption">When UNESCO is worried about a World Heritage property, it asks for a State of Conservation report. Since 1983, 14 of Australia’s 21 World Heritage properties have been reported on 88 times. The Great Barrier Reef and the Tasmanian Wilderness lead with 20 reports each, and Kakadu follows with 12, mostly about mining. Across all reports, mining is the most raised threat (36 reports), followed by weak management (34). Climate change and fire came up only twice before 2011, but in 11 of the 16 years since. Spike height shows the number of reports. Pick a threat from the dropdown to see which properties UNESCO raised it for, and click a spike to see that property’s threats in the timeline (click an empty part of the map to reset). Macquarie Island (4 reports) and Heard and McDonald Islands (3) are too far south to fit on the map but are included in the timeline. Threats are grouped from UNESCO’s 30 threat categories.</p>
+<p class="notice"><span>What to notice</span>These are the best protected places in the country, yet the Reef and the Tasmanian Wilderness have each been reported on 20 times.</p>
+<p class="chart-source">Source: UNESCO World Heritage Centre, State of Conservation database (downloaded 25 October 2026)</p>
+</div>
+<!-- Part 05 | Idiom 14: Annotated timeline (timeline_ningaloo.vg.json) -->
+<div class="chart-card full">
+<h3>Ningaloo: World Heritage listed, and still heating up</h3>
+<div class="chart" id="timeline_ningaloo"></div>
+<p class="caption">Ningaloo was World Heritage listed in 2011 and IUCN rates it generally well protected, yet in 2025 it went through its worst heat stress on record. Click a legend item to show one type of event. *Projections assume global emissions keep rising.</p>
+<p class="chart-source">Source: IUCN World Heritage Outlook (2025); Heron et al. (2017)</p>
+</div>
+</section>
+<!-- ===== Part 06: Can conservation keep up? ===== -->
+<aside aria-label="Story transition" class="chapter-bridge"><span class="bridge-mark">“</span><div><h3>Threats raise a practical question: who pays to respond?</h3><p>After identifying the risks, we follow the money: where Australian heritage grants go, and how concentrated World Heritage funding is.</p></div></aside><section aria-labelledby="heading-sec-conservation" id="sec-conservation">
+<p class="section-number">06</p>
+<h2 id="heading-sec-conservation">Can conservation keep up?</h2>
+<p class="intro">Looking after heritage costs money: for repairs, for management plans and for research. The Australian Heritage Grants program funds projects at National Heritage places, and Round 8 (2025–26) shows where that money went.</p>
+<!-- Part 06 | KPI row (not a chart): the key funding numbers at a glance -->
+<div class="kpi-row">
+<div class="kpi"><span class="kpi-value">$5.2m</span><span class="kpi-label">in heritage grants for 20 projects, Round 8</span></div>
+<div class="kpi accent"><span class="kpi-value">2%</span><span class="kpi-label">went to Indigenous listed places</span></div>
+<div class="kpi"><span class="kpi-value">$485m</span><span class="kpi-label">World Heritage funding, 2011–16</span></div>
+<div class="kpi accent"><span class="kpi-value">81%</span><span class="kpi-label">of it to just 3 properties</span></div>
+</div>
+<!-- Part 06 | Idiom 15: Sankey diagram (sankey_grants.vg.json) -->
+<div class="chart-card full">
+<h3>Where the money goes: Australian Heritage Grants, Round 8 (2025–26)</h3>
+<div class="chart" id="sankey_grants"></div>
+<p class="caption">Round 8 funded 20 projects worth $5.2 million. Historic places received 55% and natural places 42%, but only one project ($0.12 million, about 2%) went to a place listed for its Indigenous values. Some projects at natural places, such as Willandra Lakes, are Indigenous-led, so this shows how places are listed rather than every dollar that helps Indigenous heritage. Projects are grouped by the main purpose in their description. Amounts exclude GST. Hover over a flow for details.</p>
+<p class="chart-source">Source: DCCEEW, Australian Heritage Grants Round 8 successful projects</p>
+</div>
+<!-- Part 06 | Idiom 16: Pareto chart (pareto_wh_funding.vg.json) -->
+<div class="chart-card full">
+<h3>The big picture: who gets the money to manage World Heritage?</h3>
+<div class="chart" id="pareto_wh_funding"></div>
+<p class="caption">Between 2011–12 and 2015–16, the Australian Government spent $485 million managing World Heritage properties. Just three of them, the Great Barrier Reef, Kakadu and Uluru-Kata Tjuta, received 81%. Ningaloo Coast received $3.2 million (0.7%). Bars show each property’s funding, largest first, and the line shows the running total. Hover for details, or pick a single financial year. Heard and McDonald Islands received no funding in this period, so it is not shown. Amounts in millions of dollars; this is older data than the rest of the page.</p>
+<p class="chart-source">Source: Department of the Environment and Energy, World Heritage management funding 2011–12 to 2015–16</p>
+</div>
+<!-- Part 06 | Conclusion -->
+<p class="conclusion">Australia has listed 126 places of outstanding value to the nation, and hundreds of thousands more sit on state registers. But the data tells us that a listing is only the start. Most national listings happened in the first few years. Almost every Indigenous stakeholder surveyed says the law does not protect their heritage. Almost a third of National Heritage places cannot show an effective management plan, and experts say the biggest gap is resourcing. Even World Heritage places like the Reef and Ningaloo are now under growing climate pressure.</p>
+<p class="conclusion closing-line">Listed is not the same as safe.</p>
+</section>
+</main>
+<!-- Footer: sources, author, date, AI acknowledgement -->
+<footer>
+<div class="container">
+<h2>Data sources</h2>
+<ul class="sources">
+<li>National Heritage List Spatial Database (NHL), public. Department of Climate Change, Energy, the Environment and Water.
+                    <a href="https://fed.dcceew.gov.au/datasets/erin::national-heritage-list-spatial-database-nhl-public/about">Link</a></li>
+<li>SoE2020: Cultural heritage site locations. data.gov.au.
+                    <a href="https://data.gov.au/data/dataset/soe2020-cultural-heritage-site-locations/resource/d5a3ec00-b2e0-4faa-8412-3807620eaa0b">Link</a></li>
+<li>2021 State of the Environment: Heritage. data.gov.au.
+                    <a href="https://data.gov.au/data/dataset/2021-soe-heritage-011">Link</a></li>
+<li>McConnell A (2021a). Heritage supplementary report 4: heritage expert survey approach and results. Australia State of the Environment 2021.</li>
+<li>McConnell A (2021d). Heritage supplementary report 2: heritage and protected area agency approach and results. Australia State of the Environment 2021.</li>
+<li>State of the Environment 2021: Other pressures on Indigenous heritage.
+                    <a href="https://soe.dcceew.gov.au/heritage/pressures/other-pressures-indigenous-heritage">Link</a></li>
+<li>State of the Environment 2021: Heritage key findings.
+                    <a href="https://soe.dcceew.gov.au/heritage/key-findings">Link</a></li>
+<li>DCCEEW (2023). Review of the National Heritage List and Commonwealth Heritage List, 1 June 2018 to 30 July 2023 (Addendum, Figure 10 and Appendix F).</li>
+<li>UNESCO World Heritage Centre (2026). State of Conservation Information System, Australia, downloaded 25 October 2026.
+                    <a href="https://whc.unesco.org/en/soc/">Link</a></li>
+<li>IUCN World Heritage Outlook (2025). Ningaloo Coast: 2025 Conservation Outlook Assessment.
+                    <a href="https://worldheritageoutlook.iucn.org/">Link</a></li>
+<li>Heron SF, Eakin CM, Douvere F et al. (2017). Impacts of climate change on World Heritage coral reefs: a first global scientific assessment. UNESCO World Heritage Centre.</li>
+<li>Australian Heritage Grants Round 8 successful projects. DCCEEW.
+                    <a href="https://www.dcceew.gov.au/sites/default/files/documents/ahg-round-8-successful-projects.pdf">Link</a></li>
+<li>Commonwealth funding for management of World Heritage properties, 2011–12 to 2015–16. Department of the Environment and Energy.</li>
+<li>Australian Bureau of Statistics (2026). National, state and territory population, March 2026.
+                    <a href="https://www.abs.gov.au/statistics/people/population/national-state-and-territory-population/mar-2026">Link</a></li>
+<li>Australian Bureau of Statistics (2020). National, state and territory population, June 2020 (used for the bivariate map).
+                    <a href="https://www.abs.gov.au/statistics/people/population/national-state-and-territory-population/jun-2020">Link</a></li>
+<li>Hero photo: A land of contrasts (2023, April 24). Journey Beyond Rail.
+                    <a href="https://www.journeybeyondrail.com.au/news/a-land-of-contrasts/">Link</a></li>
+</ul>
+<p class="meta">Created by Kan Rou Yi (34661093) for FIT3179 Data Visualisation, Assignment 2. Last updated 26 October 2026.</p>
+<p class="meta">AI acknowledgement: I used Claude (Anthropic) to help write and debug the Vega-Lite and Vega chart specifications, prepare and check the data files, style the page (layout, CSS, navigation and scroll effects), and draft and edit the captions, notes and introduction. I chose the topic, found the data sources, decided the story, and reviewed and tested all of the code and text.</p>
+</div>
+</footer>
+<!-- main.js: embeds all charts, scroll fade in, scrolly map, nav highlight, Walk to map -->
+<script src="js/main.js"></script>
+</body>
+</html>

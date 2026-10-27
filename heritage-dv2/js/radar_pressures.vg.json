@@ -1,0 +1,350 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Radar chart: share of expert-named pressures from each driver (climate change, industry, population, governance) for each heritage type.",
+  "width": 440,
+  "height": 440,
+  "background": null,
+  "encoding": {
+    "x": {
+      "field": "x",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          -0.55,
+          0.55
+        ]
+      },
+      "axis": null
+    },
+    "y": {
+      "field": "y",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          -0.55,
+          0.55
+        ]
+      },
+      "axis": null
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "sequence": {
+          "start": 0,
+          "stop": 16,
+          "as": "i"
+        }
+      },
+      "transform": [
+        {
+          "calculate": "(floor(datum.i / 4) + 1) / 10",
+          "as": "level"
+        },
+        {
+          "calculate": "datum.i % 4",
+          "as": "axis_i"
+        },
+        {
+          "calculate": "datum.level * sin(datum.axis_i * PI / 2)",
+          "as": "x"
+        },
+        {
+          "calculate": "datum.level * cos(datum.axis_i * PI / 2)",
+          "as": "y"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "interpolate": "linear-closed",
+        "color": "#d8cfc2",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "detail": {
+          "field": "level"
+        },
+        "order": {
+          "field": "axis_i"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "level": 0.1
+          },
+          {
+            "level": 0.2
+          },
+          {
+            "level": 0.3
+          },
+          {
+            "level": 0.4
+          }
+        ]
+      },
+      "transform": [
+        {
+          "calculate": "datum.level / 2",
+          "as": "x"
+        },
+        {
+          "calculate": "datum.level / 2",
+          "as": "y"
+        },
+        {
+          "calculate": "format(datum.level, '.0%')",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 5,
+        "dy": -5,
+        "fontSize": 10,
+        "color": "#8c8278"
+      },
+      "encoding": {
+        "text": {
+          "field": "label"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "axis_i": 0,
+            "label": "Climate change"
+          },
+          {
+            "axis_i": 1,
+            "label": "Industry"
+          },
+          {
+            "axis_i": 2,
+            "label": "Population"
+          },
+          {
+            "axis_i": 3,
+            "label": "Governance"
+          }
+        ]
+      },
+      "transform": [
+        {
+          "calculate": "0.42 * sin(datum.axis_i * PI / 2)",
+          "as": "x"
+        },
+        {
+          "calculate": "0.42 * cos(datum.axis_i * PI / 2)",
+          "as": "y"
+        },
+        {
+          "calculate": "0",
+          "as": "x0"
+        },
+        {
+          "calculate": "0",
+          "as": "y0"
+        },
+        {
+          "calculate": "0.48 * sin(datum.axis_i * PI / 2)",
+          "as": "lx"
+        },
+        {
+          "calculate": "0.48 * cos(datum.axis_i * PI / 2)",
+          "as": "ly"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rule",
+            "color": "#d8cfc2"
+          },
+          "encoding": {
+            "x2": {
+              "field": "x0"
+            },
+            "y2": {
+              "field": "y0"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 13,
+            "fontWeight": "bold",
+            "color": "#2b2622"
+          },
+          "encoding": {
+            "x": {
+              "field": "lx",
+              "type": "quantitative"
+            },
+            "y": {
+              "field": "ly",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "data": {
+        "url": "data/heritage_pressures.csv"
+      },
+      "transform": [
+        {
+          "joinaggregate": [
+            {
+              "op": "sum",
+              "field": "mentions",
+              "as": "type_total"
+            }
+          ],
+          "groupby": [
+            "heritage_type"
+          ]
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "mentions",
+              "as": "n"
+            },
+            {
+              "op": "max",
+              "field": "type_total",
+              "as": "type_total"
+            }
+          ],
+          "groupby": [
+            "heritage_type",
+            "driver"
+          ]
+        },
+        {
+          "filter": "datum.driver != 'Other'"
+        },
+        {
+          "calculate": "datum.n / datum.type_total",
+          "as": "share"
+        },
+        {
+          "calculate": "indexof(['Climate change', 'Industry', 'Population', 'Governance'], datum.driver)",
+          "as": "axis_i"
+        },
+        {
+          "calculate": "datum.share * sin(datum.axis_i * PI / 2)",
+          "as": "x"
+        },
+        {
+          "calculate": "datum.share * cos(datum.axis_i * PI / 2)",
+          "as": "y"
+        }
+      ],
+      "encoding": {
+        "color": {
+          "field": "heritage_type",
+          "type": "nominal",
+          "title": "Heritage type",
+          "scale": {
+            "domain": [
+              "Natural",
+              "Geoheritage",
+              "Indigenous",
+              "Historic"
+            ],
+            "range": [
+              "#4f7a5a",
+              "#6f6a8f",
+              "#b5451b",
+              "#8a6d3b"
+            ]
+          },
+          "legend": {
+            "orient": "right",
+            "labelFontSize": 13,
+            "titleFontSize": 13,
+            "symbolType": "stroke",
+            "symbolStrokeWidth": 3
+          }
+        },
+        "opacity": {
+          "condition": {
+            "param": "type_pick",
+            "value": 1
+          },
+          "value": 0.1
+        }
+      },
+      "layer": [
+        {
+          "params": [
+            {
+              "name": "type_pick",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "heritage_type"
+                ]
+              },
+              "bind": "legend"
+            }
+          ],
+          "mark": {
+            "type": "line",
+            "interpolate": "linear-closed",
+            "strokeWidth": 2.5
+          },
+          "encoding": {
+            "order": {
+              "field": "axis_i"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "circle",
+            "size": 70
+          },
+          "encoding": {
+            "tooltip": [
+              {
+                "field": "heritage_type",
+                "title": "Heritage type"
+              },
+              {
+                "field": "driver",
+                "title": "Type of pressure"
+              },
+              {
+                "field": "share",
+                "title": "Share of expert mentions",
+                "format": ".0%"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif"
+  }
+}

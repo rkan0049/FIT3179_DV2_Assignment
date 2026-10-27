@@ -1,0 +1,5 @@
+step,stage,places,lost,lost_label,colour
+1,All National Heritage places,120,18,no survey answer,#3c3831
+2,Survey answered,102,17,no management plan reported,#5b5850
+3,Management plan in place,85,12,plan rated not very effective (4) or not rated (8),#8a8376
+4,Plan rated effective or better,73,,,#2f4b6e

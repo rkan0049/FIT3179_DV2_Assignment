@@ -1,0 +1,320 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Funnel chart: how many of the 120 National Heritage places (2023) answered the survey, have a management plan, and have a plan their managers rate as effective. Places lost at each step are labelled on the right.",
+  "width": 780,
+  "height": 360,
+  "background": null,
+  "data": {
+    "url": "data/nhl_management_funnel.csv",
+    "format": {
+      "parse": {
+        "step": "number",
+        "places": "number",
+        "lost": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "-datum.places / 2",
+      "as": "left"
+    },
+    {
+      "calculate": "datum.places / 2",
+      "as": "right"
+    },
+    {
+      "calculate": "datum.step - 0.32",
+      "as": "top"
+    },
+    {
+      "calculate": "datum.step + 0.32",
+      "as": "bottom"
+    },
+    {
+      "calculate": "format(datum.places / 120, '.0%')",
+      "as": "pct"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          -62,
+          150
+        ],
+        "nice": false
+      },
+      "axis": null
+    },
+    "y": {
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0.55,
+          4.75
+        ],
+        "reverse": true,
+        "nice": false,
+        "zero": false
+      },
+      "axis": null
+    }
+  },
+  "layer": [
+    {
+      "transform": [
+        {
+          "window": [
+            {
+              "op": "lead",
+              "field": "places",
+              "as": "next_places"
+            }
+          ],
+          "sort": [
+            {
+              "field": "step"
+            }
+          ]
+        },
+        {
+          "filter": "datum.next_places != null"
+        },
+        {
+          "calculate": "[0, 1]",
+          "as": "end"
+        },
+        {
+          "flatten": [
+            "end"
+          ]
+        },
+        {
+          "calculate": "datum.end == 0 ? datum.bottom : datum.step + 0.68",
+          "as": "cy"
+        },
+        {
+          "calculate": "datum.end == 0 ? -datum.places / 2 : -datum.next_places / 2",
+          "as": "cx0"
+        },
+        {
+          "calculate": "datum.end == 0 ? datum.places / 2 : datum.next_places / 2",
+          "as": "cx1"
+        }
+      ],
+      "mark": {
+        "type": "area",
+        "orient": "horizontal",
+        "color": "#e6dfd2",
+        "opacity": 0.9
+      },
+      "encoding": {
+        "y": {
+          "field": "cy"
+        },
+        "x": {
+          "field": "cx0"
+        },
+        "x2": {
+          "field": "cx1"
+        },
+        "detail": {
+          "field": "step"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rect",
+        "cornerRadius": 3,
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "x": {
+          "field": "left"
+        },
+        "x2": {
+          "field": "right"
+        },
+        "y": {
+          "field": "top"
+        },
+        "y2": {
+          "field": "bottom"
+        },
+        "color": {
+          "field": "colour",
+          "type": "nominal",
+          "scale": null
+        },
+        "tooltip": [
+          {
+            "field": "stage",
+            "title": "Stage"
+          },
+          {
+            "field": "places",
+            "title": "National Heritage places"
+          },
+          {
+            "field": "pct",
+            "title": "Share of all 120"
+          }
+        ],
+        "opacity": {
+          "condition": {
+            "param": "stage_hover",
+            "value": 1
+          },
+          "value": 0.45
+        }
+      },
+      "params": [
+        {
+          "name": "stage_hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "step"
+            ],
+            "on": "pointerover",
+            "clear": "pointerout"
+          }
+        }
+      ]
+    },
+    {
+      "transform": [
+        {
+          "calculate": "[datum.stage, datum.places + ' places (' + datum.pct + ')']",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 13,
+        "lineHeight": 17,
+        "baseline": "middle",
+        "color": "#ffffff",
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "x": {
+          "datum": 0
+        },
+        "y": {
+          "field": "step"
+        },
+        "text": {
+          "field": "label"
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.lost > 0"
+        },
+        {
+          "calculate": "datum.step + 0.5",
+          "as": "mid"
+        },
+        {
+          "calculate": "(datum.places / 2 + (datum.places - datum.lost) / 2) / 2",
+          "as": "edge"
+        },
+        {
+          "calculate": "62",
+          "as": "label_x"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "rule",
+            "color": "#9a6a12",
+            "strokeDash": [
+              3,
+              3
+            ],
+            "strokeWidth": 1.2
+          },
+          "encoding": {
+            "y": {
+              "field": "mid"
+            },
+            "x": {
+              "field": "edge"
+            },
+            "x2": {
+              "field": "label_x"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 6,
+            "fontSize": 13,
+            "color": "#9a6a12"
+          },
+          "encoding": {
+            "y": {
+              "field": "mid"
+            },
+            "x": {
+              "field": "label_x"
+            },
+            "text": {
+              "field": "lost_text"
+            }
+          },
+          "transform": [
+            {
+              "calculate": "datum.lost + ' places lost: ' + datum.lost_label",
+              "as": "lost_text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "y": 4.4,
+            "text": "8 extremely effective, 26 very effective, 39 effective"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "baseline": "top",
+        "fontSize": 12,
+        "color": "#5b5850",
+        "fontStyle": "italic"
+      },
+      "encoding": {
+        "x": {
+          "datum": 0
+        },
+        "y": {
+          "field": "y"
+        },
+        "text": {
+          "field": "text"
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif"
+  }
+}

@@ -1,0 +1,432 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Annotated timeline: marine heat stress events at Ningaloo Coast World Heritage Area since 2010, key milestones, and projected coral bleaching under business-as-usual emissions.",
+  "width": 820,
+  "height": 330,
+  "background": null,
+  "encoding": {
+    "x": {
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          2008,
+          2051
+        ],
+        "nice": false
+      },
+      "axis": {
+        "values": [
+          2010,
+          2015,
+          2020,
+          2025,
+          2030,
+          2035,
+          2040,
+          2045,
+          2050
+        ],
+        "format": "d",
+        "title": null,
+        "grid": false,
+        "domain": false,
+        "ticks": false,
+        "labelFontSize": 12,
+        "labelColor": "#5b5850",
+        "labelPadding": 6
+      }
+    },
+    "y": {
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          -3.3,
+          4.9
+        ]
+      },
+      "axis": null
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "values": [
+          {
+            "x0": 2025.9,
+            "x1": 2041,
+            "label": "Projected, if global emissions stay high",
+            "fill": "#f6f0e1"
+          },
+          {
+            "x0": 2041,
+            "x1": 2049,
+            "label": "Bleaching twice a decade",
+            "fill": "#f0e2c2"
+          },
+          {
+            "x0": 2049,
+            "x1": 2051,
+            "label": "Every year",
+            "fill": "#e0c48a"
+          }
+        ]
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "rect",
+            "y": 0,
+            "y2": {
+              "expr": "height"
+            }
+          },
+          "encoding": {
+            "x": {
+              "field": "x0"
+            },
+            "x2": {
+              "field": "x1"
+            },
+            "color": {
+              "field": "fill",
+              "type": "nominal",
+              "scale": null
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.label != 'Every year'"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "top",
+            "dx": 6,
+            "y": {
+              "expr": "height - 18"
+            },
+            "fontSize": 11,
+            "fontStyle": "italic",
+            "color": "#8a8376"
+          },
+          "encoding": {
+            "x": {
+              "field": "x0"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x0": 2008,
+            "x1": 2025.9,
+            "dash": "solid"
+          },
+          {
+            "x0": 2025.9,
+            "x1": 2051,
+            "dash": "dashed"
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 2.5,
+        "color": "#3c3831"
+      },
+      "encoding": {
+        "x": {
+          "field": "x0"
+        },
+        "x2": {
+          "field": "x1"
+        },
+        "y": {
+          "datum": 0
+        },
+        "strokeDash": {
+          "field": "dash",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "solid",
+              "dashed"
+            ],
+            "range": [
+              [
+                1,
+                0
+              ],
+              [
+                6,
+                5
+              ]
+            ]
+          },
+          "legend": null
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x0": 2021,
+            "x1": 2022,
+            "y": 1.8
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#aca18e",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "x0"
+        },
+        "x2": {
+          "field": "x1"
+        },
+        "y": {
+          "field": "y"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "x": 2021,
+            "y": 1.8
+          }
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#aca18e",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "x"
+        },
+        "y": {
+          "field": "y"
+        },
+        "y2": {
+          "datum": 0
+        }
+      }
+    },
+    {
+      "data": {
+        "url": "data/ningaloo_timeline.csv",
+        "format": {
+          "parse": {
+            "year": "number",
+            "side": "number",
+            "level": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "calculate": "datum.side * datum.level",
+          "as": "y_end"
+        },
+        {
+          "calculate": "datum.detail ? split(datum.label + '|' + datum.detail, '|') : [datum.label]",
+          "as": "lines"
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "year"
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "rule",
+            "color": "#aca18e",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "y": {
+              "field": "y_end"
+            },
+            "y2": {
+              "datum": 0
+            },
+            "opacity": {
+              "condition": {
+                "param": "kind_pick",
+                "value": 1
+              },
+              "value": 0.15
+            }
+          },
+          "transform": [
+            {
+              "filter": "datum.label"
+            }
+          ]
+        },
+        {
+          "mark": {
+            "type": "point",
+            "filled": true,
+            "stroke": "#ffffff",
+            "strokeWidth": 1.5,
+            "opacity": 1
+          },
+          "encoding": {
+            "y": {
+              "datum": 0
+            },
+            "shape": {
+              "field": "kind",
+              "type": "nominal",
+              "title": null,
+              "scale": {
+                "domain": [
+                  "Heat stress event",
+                  "Worst event on record",
+                  "Milestone",
+                  "Projection"
+                ],
+                "range": [
+                  "circle",
+                  "circle",
+                  "diamond",
+                  "cross"
+                ]
+              }
+            },
+            "color": {
+              "field": "kind",
+              "type": "nominal",
+              "title": null,
+              "scale": {
+                "domain": [
+                  "Heat stress event",
+                  "Worst event on record",
+                  "Milestone",
+                  "Projection"
+                ],
+                "range": [
+                  "#9a6a12",
+                  "#5a3d08",
+                  "#2f4b6e",
+                  "#5b5850"
+                ]
+              },
+              "legend": {
+                "orient": "top-left",
+                "direction": "horizontal",
+                "labelFontSize": 12,
+                "symbolSize": 120
+              }
+            },
+            "size": {
+              "condition": {
+                "test": "datum.kind == 'Worst event on record'",
+                "value": 420
+              },
+              "value": 170
+            },
+            "tooltip": [
+              {
+                "field": "label",
+                "title": "Event"
+              },
+              {
+                "field": "kind",
+                "title": "Type"
+              }
+            ],
+            "opacity": {
+              "condition": {
+                "param": "kind_pick",
+                "value": 1
+              },
+              "value": 0.15
+            }
+          },
+          "params": [
+            {
+              "name": "kind_pick",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "kind"
+                ]
+              },
+              "bind": "legend"
+            }
+          ]
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 12,
+            "lineHeight": 15,
+            "color": "#3c3831",
+            "align": {
+              "expr": "datum.align"
+            },
+            "baseline": {
+              "expr": "datum.side > 0 ? 'bottom' : 'top'"
+            },
+            "dx": {
+              "expr": "datum.align == 'left' ? -3 : 3"
+            },
+            "dy": {
+              "expr": "datum.side > 0 ? -4 : 4"
+            }
+          },
+          "encoding": {
+            "y": {
+              "field": "y_end"
+            },
+            "text": {
+              "field": "lines"
+            },
+            "opacity": {
+              "condition": {
+                "param": "kind_pick",
+                "value": 1
+              },
+              "value": 0.15
+            }
+          },
+          "transform": [
+            {
+              "filter": "datum.label"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "legend": {
+      "symbolStrokeWidth": 0
+    }
+  }
+}

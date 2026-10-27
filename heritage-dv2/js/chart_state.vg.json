@@ -1,0 +1,184 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Proportional symbol map: historic heritage places added to state and territory registers, 2015-16 to 2019-20, with a financial year selector.",
+  "width": "container",
+  "height": 380,
+  "background": null,
+  "projection": {
+    "type": "conicEqualArea",
+    "parallels": [
+      -18,
+      -36
+    ],
+    "rotate": [
+      -132,
+      0
+    ]
+  },
+  "params": [
+    {
+      "name": "fy",
+      "value": "All five years",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All five years",
+          "2015-16",
+          "2016-17",
+          "2017-18",
+          "2018-19",
+          "2019-20"
+        ],
+        "name": "Financial year: "
+      }
+    }
+  ],
+  "layer": [
+    {
+      "data": {
+        "url": "data/aus_states.topojson",
+        "format": {
+          "type": "topojson",
+          "feature": "states"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#efe7da",
+        "stroke": "#ffffff",
+        "strokeWidth": 1
+      }
+    },
+    {
+      "data": {
+        "url": "data/state_register_added.csv"
+      },
+      "transform": [
+        {
+          "filter": "fy == 'All five years' || datum.fin_year == fy"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "added",
+              "as": "places"
+            }
+          ],
+          "groupby": [
+            "state",
+            "state_name"
+          ]
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/aus_states.topojson",
+              "format": {
+                "type": "topojson",
+                "feature": "states"
+              }
+            },
+            "key": "properties.STATE",
+            "fields": [
+              "properties.label_lon",
+              "properties.label_lat"
+            ]
+          },
+          "as": [
+            "lon",
+            "lat"
+          ]
+        },
+        {
+          "calculate": "[datum.state, format(datum.places, ',')]",
+          "as": "label"
+        }
+      ],
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "circle",
+            "color": "#8a6d3b",
+            "opacity": 0.55,
+            "stroke": "#ffffff",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "size": {
+              "field": "places",
+              "type": "quantitative",
+              "title": "Places added",
+              "scale": {
+                "domain": [
+                  0,
+                  90
+                ],
+                "range": [
+                  0,
+                  3200
+                ]
+              },
+              "legend": {
+                "orient": "bottom-left",
+                "values": [
+                  10,
+                  40,
+                  90
+                ],
+                "symbolFillColor": "#8a6d3b",
+                "symbolStrokeColor": "#ffffff",
+                "symbolOpacity": 0.55
+              }
+            },
+            "tooltip": [
+              {
+                "field": "state_name",
+                "title": "State / territory"
+              },
+              {
+                "field": "places",
+                "title": "Historic places added"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "fontSize": 12,
+            "lineHeight": 13,
+            "baseline": "middle",
+            "color": "#2b2622"
+          },
+          "encoding": {
+            "text": {
+              "field": "label"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "Source Sans 3",
+    "legend": {
+      "labelFontSize": 12,
+      "titleFontSize": 12
+    }
+  }
+}

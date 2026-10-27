@@ -1,0 +1,388 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Choropleth of National Heritage places per million residents (ABS, March 2026). main.js walks the map into a state (animates zoom, focus_lon, focus_lat) when a Walk to button or a state is clicked, and that state's places appear as dots.",
+  "width": "container",
+  "height": 500,
+  "background": null,
+  "projection": {
+    "type": "conicEqualArea",
+    "parallels": [
+      -18,
+      -36
+    ],
+    "rotate": [
+      -132,
+      0
+    ],
+    "center": {
+      "expr": "[focus_lon - 132, focus_lat]"
+    },
+    "scale": {
+      "expr": "min(width, height * 1.25) * 1.25 * zoom"
+    },
+    "translate": {
+      "expr": "[width / 2, height / 2]"
+    },
+    "clipExtent": {
+      "expr": "[[0, 0], [width, height]]"
+    }
+  },
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "'Source Sans 3', sans-serif",
+    "legend": {
+      "labelFontSize": 12
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/nhl_places.csv"
+      },
+      "transform": [
+        {
+          "filter": "datum.state != 'EXT'"
+        },
+        {
+          "calculate": "datum.class === 'Historic' ? 1 : 0",
+          "as": "is_historic"
+        },
+        {
+          "calculate": "datum.class === 'Natural' ? 1 : 0",
+          "as": "is_natural"
+        },
+        {
+          "calculate": "datum.class === 'Indigenous' ? 1 : 0",
+          "as": "is_indigenous"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "places"
+            },
+            {
+              "op": "sum",
+              "field": "is_historic",
+              "as": "historic"
+            },
+            {
+              "op": "sum",
+              "field": "is_natural",
+              "as": "natural"
+            },
+            {
+              "op": "sum",
+              "field": "is_indigenous",
+              "as": "indigenous"
+            }
+          ],
+          "groupby": [
+            "state"
+          ]
+        },
+        {
+          "calculate": "datum.state === 'NSW' ? 'New South Wales' : datum.state === 'VIC' ? 'Victoria' : datum.state === 'QLD' ? 'Queensland' : datum.state === 'WA' ? 'Western Australia' : datum.state === 'SA' ? 'South Australia' : datum.state === 'TAS' ? 'Tasmania' : datum.state === 'NT' ? 'Northern Territory' : 'Australian Capital Territory'",
+          "as": "state_name"
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/state_population.csv"
+            },
+            "key": "state",
+            "fields": [
+              "population"
+            ]
+          }
+        },
+        {
+          "calculate": "datum.places / datum.population * 1000000",
+          "as": "per_million"
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/aus_states.topojson",
+              "format": {
+                "type": "topojson",
+                "feature": "states"
+              }
+            },
+            "key": "properties.STATE"
+          },
+          "as": "geo"
+        }
+      ],
+      "params": [
+        {
+          "name": "state_hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "state"
+            ],
+            "on": "pointerover",
+            "clear": "pointerout"
+          }
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#ffffff",
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "shape": {
+          "field": "geo",
+          "type": "geojson"
+        },
+        "color": {
+          "field": "per_million",
+          "type": "quantitative",
+          "title": "Places per million people",
+          "scale": {
+            "range": [
+              "#f3eacf",
+              "#d9bf90",
+              "#9a6a12",
+              "#3c3831"
+            ]
+          },
+          "legend": {
+            "orient": "top-left",
+            "direction": "horizontal",
+            "gradientLength": 160,
+            "values": [
+              5,
+              10,
+              15,
+              20
+            ],
+            "format": ".0f",
+            "titleFontSize": 12,
+            "labelFontSize": 11
+          }
+        },
+        "strokeWidth": {
+          "condition": [
+            {
+              "test": "datum.state == walk_state",
+              "value": 2.5
+            },
+            {
+              "param": "state_hover",
+              "empty": false,
+              "value": 2
+            }
+          ],
+          "value": 1
+        },
+        "opacity": {
+          "condition": {
+            "test": "walk_state == 'ALL' || datum.state == walk_state",
+            "value": 1
+          },
+          "value": 0.3
+        },
+        "tooltip": [
+          {
+            "field": "state_name",
+            "title": "State / territory"
+          },
+          {
+            "field": "per_million",
+            "title": "Places per million people",
+            "format": ".1f"
+          },
+          {
+            "field": "places",
+            "title": "Places listed"
+          },
+          {
+            "field": "population",
+            "title": "Population (Mar 2026)",
+            "format": ","
+          },
+          {
+            "field": "historic",
+            "title": "Historic",
+            "format": ".0f"
+          },
+          {
+            "field": "natural",
+            "title": "Natural",
+            "format": ".0f"
+          },
+          {
+            "field": "indigenous",
+            "title": "Indigenous",
+            "format": ".0f"
+          }
+        ],
+        "fillOpacity": {
+          "condition": {
+            "test": "walk_state != 'ALL' && datum.state == walk_state",
+            "value": 0.45
+          },
+          "value": 1
+        }
+      }
+    },
+    {
+      "comment": "Annotation: call out the per person flip",
+      "data": {
+        "values": [
+          {
+            "lon": 150.2,
+            "lat": -44.6,
+            "align": "left",
+            "t": [
+              "Tasmania: 22.4 per million,",
+              "the highest rate"
+            ],
+            "c": "#3c3831"
+          },
+          {
+            "lon": 133.4,
+            "lat": -19.6,
+            "align": "center",
+            "t": [
+              "NT: 22.3",
+              "per million"
+            ],
+            "c": "#ffffff"
+          },
+          {
+            "lon": 154.2,
+            "lat": -31.5,
+            "align": "left",
+            "t": [
+              "NSW has the most places",
+              "but only 3.5 per million"
+            ],
+            "c": "#3c3831"
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "lineHeight": 15,
+        "align": {
+          "expr": "datum.align"
+        },
+        "fontSize": 12,
+        "fontStyle": "italic"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.c == '#ffffff'",
+            "value": "#ffffff"
+          },
+          "value": "#3c3831"
+        },
+        "opacity": {
+          "value": {
+            "expr": "walk_state == 'ALL' ? 1 : 0"
+          }
+        }
+      }
+    },
+    {
+      "comment": "Places in the chosen state appear as dots once you walk in",
+      "data": {
+        "url": "data/nhl_places.csv"
+      },
+      "transform": [
+        {
+          "filter": "walk_state != 'ALL' && datum.state == walk_state"
+        }
+      ],
+      "mark": {
+        "type": "circle",
+        "stroke": "#ffffff",
+        "strokeWidth": 1.4,
+        "cursor": "pointer"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "size": {
+          "value": {
+            "expr": "min(60 + zoom * 18, 260)"
+          }
+        },
+        "color": {
+          "condition": [
+            {
+              "test": "datum.class == 'Indigenous'",
+              "value": "#9a6a12"
+            },
+            {
+              "test": "datum.class == 'Natural'",
+              "value": "#2f4b6e"
+            }
+          ],
+          "value": "#8a8376"
+        },
+        "opacity": {
+          "value": 0.95
+        },
+        "tooltip": [
+          {
+            "field": "name",
+            "title": "Place"
+          },
+          {
+            "field": "class",
+            "title": "Heritage type"
+          },
+          {
+            "field": "year",
+            "title": "Listed"
+          }
+        ]
+      }
+    }
+  ],
+  "params": [
+    {
+      "name": "walk_state",
+      "value": "ALL"
+    },
+    {
+      "name": "zoom",
+      "value": 1
+    },
+    {
+      "name": "focus_lon",
+      "value": 134
+    },
+    {
+      "name": "focus_lat",
+      "value": -28
+    }
+  ]
+}
